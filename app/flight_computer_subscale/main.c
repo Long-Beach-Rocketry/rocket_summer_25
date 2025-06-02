@@ -2,7 +2,7 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
-#include "subscale_bsp.h"
+#include "flight_computer_subscale_bsp.h"
 
 #include "gpio.h"
 #include "i2c.h"

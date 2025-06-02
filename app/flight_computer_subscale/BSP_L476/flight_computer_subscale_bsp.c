@@ -1,6 +1,6 @@
 
 //for rayne flight module
-#include "subscale_bsp.h"
+#include "flight_computer_subscale_bsp.h"
 
 #define EXIT_IF_FAIL(cond) EXIT_IF(!(cond), false)
 
