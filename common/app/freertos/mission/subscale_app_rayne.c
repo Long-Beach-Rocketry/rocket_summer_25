@@ -1,6 +1,6 @@
 
 #include "subscale_app_rayne.h"
-
+//needs to be moved and its own
 static Cli cli;
 
 static W25q flash;
