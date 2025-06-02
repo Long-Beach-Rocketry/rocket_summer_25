@@ -17,17 +17,25 @@
 Usart usart;
 Spi spi;
 I2c i2c;
-Gpio led_gpio;
+Gpio red_led;
+Gpio green_led;
+Gpio blue_led;
 
 int main(void)
 {
+
+    BSP_Init(&usart, &spi, &i2c, &red_led, &green_led, &blue_led);
+
     volatile uint32_t c = 0;
-    while (c < 1000000)
+    while (c < 5000000)
     {
         c += 1;
     }
-    BSP_Init(&usart, &spi, &i2c, &led_gpio);
-    SubscaleAppCreateRayne(&usart, &spi, &i2c, &led_gpio, SystemReset);
+
+    //HAL_Delay(500);  //bc we thing the cap is too big
+
+    SubscaleAppCreateRayne(&usart, &spi, &i2c, &red_led, SystemReset);
+    ConfigIrq();
     // uint32_t count = 1000;
     // // while (1)
     // // {

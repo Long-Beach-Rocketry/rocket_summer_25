@@ -62,8 +62,8 @@
         },
         {
             "cwd": "${workspaceFolder}",
-            "executable": "${workspaceRoot}/build/stm32l476/app/subscale/subscale",
-            "name": "Subscale L4",
+            "executable": "${workspaceRoot}/build/stm32l476/app/flight_computer_subscale/flight_computer_subscale",
+            "name": "SUBSCALE-FC",
             "request": "launch",
             "type": "cortex-debug",
             "servertype": "openocd",
