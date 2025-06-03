@@ -10,8 +10,9 @@ static uint8_t driver_mem[DRIVER_MEM_SIZE] = {0};
 bool BSP_Init(Usart* usart, Spi* spi, I2c* i2c, Gpio* red_led, Gpio* green_led,
               Gpio* blue_led)
 {
-    HAL_InitTick(0);
+    HAL_Init();
     SystemClock_Config();
+    HAL_InitTick(0);
     EXIT_IF_FAIL(InitPrealloc(&memory, driver_mem, DRIVER_MEM_SIZE));
 
     // Single FRT timer.
@@ -68,7 +69,7 @@ bool BSP_Init(Usart* usart, Spi* spi, I2c* i2c, Gpio* red_led, Gpio* green_led,
     EXIT_IF_FAIL(GiveStI2c(i2c, &memory, time, I2C1_BASE, 0x20B,
                            (StGpioParams){{0}, GPIOB_BASE, 6, i2c_conf},
                            (StGpioParams){{0}, GPIOB_BASE, 7, i2c_conf}));
-
+    __enable_irq();
     return true;
 }
 
@@ -92,6 +93,7 @@ void SystemReset(void)
 void TIM1_UP_TIM16_IRQHandler(void)
 {
     HAL_TIM_IRQHandler(&htim1);
+    HAL_IncTick();
 }
 
 void SystemClock_Config(void)
@@ -116,7 +118,7 @@ void SystemClock_Config(void)
     RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
     RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
     RCC_OscInitStruct.PLL.PLLM = 1;
-    RCC_OscInitStruct.PLL.PLLN = 16;
+    RCC_OscInitStruct.PLL.PLLN = 8;
     RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV7;
     RCC_OscInitStruct.PLL.PLLQ = RCC_PLLQ_DIV2;
     RCC_OscInitStruct.PLL.PLLR = RCC_PLLR_DIV2;
