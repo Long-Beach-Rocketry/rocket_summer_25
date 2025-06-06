@@ -31,11 +31,6 @@ static void loop_func(void)
 void SubscaleAppCreate(Usart* usart, Spi* spi, I2c* i2c, Gpio* led_gpio,
                        ResetFunc reset)
 {
-    uint32_t count = 0;
-    while (count < 10000)
-    {
-        count += 1;
-    }
     led = led_gpio;
     Command commands[4] = {{"Blink", blink, "Blinks LED."},
                            {"Imu", read_bno055, "Reads IMU accel/gyro."},

@@ -66,7 +66,7 @@ bool BSP_Init(Usart* usart, Spi* spi, I2c* i2c, Gpio* red_led, Gpio* green_led,
 
     // PB6 PB7 AF 4
     const StGpioSettings i2c_conf = {ALT_FUNC, OPEN_DRAIN, 0, PULL_UP, 0x4};
-    EXIT_IF_FAIL(GiveStI2c(i2c, &memory, time, I2C1_BASE, 0xD09Be3,
+    EXIT_IF_FAIL(GiveStI2c(i2c, &memory, time, I2C1_BASE, 0x60112F,
                            (StGpioParams){{0}, GPIOB_BASE, 6, i2c_conf},
                            (StGpioParams){{0}, GPIOB_BASE, 7, i2c_conf}));
     __enable_irq();
@@ -119,7 +119,7 @@ void SystemClock_Config(void)
     RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
     RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_MSI;
     RCC_OscInitStruct.PLL.PLLM = 1;
-    RCC_OscInitStruct.PLL.PLLN = 20;
+    RCC_OscInitStruct.PLL.PLLN = 16;
     RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV7;
     RCC_OscInitStruct.PLL.PLLQ = RCC_PLLQ_DIV2;
     RCC_OscInitStruct.PLL.PLLR = RCC_PLLR_DIV2;
@@ -137,7 +137,7 @@ void SystemClock_Config(void)
     RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
     RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
 
-    if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK)
+    if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_1) != HAL_OK)
     {
         Error_Handler();
     }

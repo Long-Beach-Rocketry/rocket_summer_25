@@ -22,10 +22,13 @@ static Gpio* led;
 
 static void loop_func(void)
 {
-    nav.update(&nav);
+    if (logger.enabled)
+    {
+        nav.update(&nav);
+        led->toggle(led);
+    }
     nav.tick = xTaskGetTickCount();
     logger_update(&logger);
-    led->toggle(led);
 }
 
 void SubscaleAppCreateRayne(Usart* usart, Spi* spi, I2c* i2c, Gpio* led_gpio,
