@@ -27,7 +27,10 @@ int main(void)
 
     BSP_Init(&usart, &spi, &i2c, &red_led, &green_led, &blue_led);
 
-    HAL_Delay(500);  //delete later
+    /** TODO: delete this and replace set up all sensors in rtos and not in subscale app create because IMU starts slow.
+     *  Hal delay is not reuseable.
+     */
+    HAL_Delay(500);
 
     SubscaleAppCreateRayne(&usart, &spi, &i2c, &red_led, SystemReset);
     ConfigIrq();

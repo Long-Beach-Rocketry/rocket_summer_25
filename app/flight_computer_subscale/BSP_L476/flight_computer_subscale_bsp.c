@@ -1,5 +1,4 @@
-
-//for rayne flight module
+// This bsp is for Khoa's flight computer.
 #include "flight_computer_subscale_bsp.h"
 
 #define EXIT_IF_FAIL(cond) EXIT_IF(!(cond), false)
@@ -19,9 +18,9 @@ bool BSP_Init(Usart* usart, Spi* spi, I2c* i2c, Gpio* red_led, Gpio* green_led,
     Timeout* time = make_frt_timer(&memory, 100);
 
     // LED GPIO
-    //Blue PB0
-    //Green PC7
-    //Red PC6
+    // Blue PB0
+    // Green PC7
+    // Red PC6
     RCC->AHB2ENR |= RCC_AHB2ENR_GPIOBEN;
     RCC->AHB2ENR |= RCC_AHB2ENR_GPIOCEN;
 
@@ -103,6 +102,7 @@ void TIM1_UP_TIM16_IRQHandler(void)
     HAL_IncTick();
 }
 
+// Setup frequency to 64 MHz
 void SystemClock_Config(void)
 {
     RCC_OscInitTypeDef RCC_OscInitStruct = {0};

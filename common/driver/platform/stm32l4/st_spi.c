@@ -1,15 +1,11 @@
 #include "st_spi.h"
 
-/* Data register access type - 8-bit for byte-oriented transfers */
 typedef volatile uint8_t* DataReg;
 
 void StSpiInit(Spi* spi, StPrivSpi* st_spi, uint32_t base_addr, Timeout* timer)
 {
-    /* Map hardware instance to the L4's peripheral address space */
     st_spi->instance = (SPI_TypeDef*)base_addr;
     st_spi->timer = timer;
-
-    /* Connect hardware-specific implementation to generic interface */
     spi->priv = (void*)st_spi;
     spi->send = StSpiSend;
     spi->read = StSpiRead;
@@ -20,13 +16,6 @@ void StSpiConfig(Spi* spi)
 {
     StPrivSpi* dev = (StPrivSpi*)spi->priv;
 
-    /* 
-     * STM32L4 SPI Configuration
-     * ------------------------
-     * The L4 series operates in low-power mode by default
-     */
-
-    /* Reset all registers in CR1 */
     dev->instance->CR1 = 0;
 
     /* 
@@ -38,13 +27,11 @@ void StSpiConfig(Spi* spi)
     /* Set MSB first */
     dev->instance->CR1 &= ~SPI_CR1_LSBFIRST;
 
-    /* 
-     * L4 SPI clock configuration
-     * Set baudrate prescaler to balance speed and power consumption
-     * SPI Clock = PCLK / 2^(BR+1)
+    /** 
+      * L4 SPI clock configuration
+      * Set baudrate prescaler to balance speed and power consumption
+      * SPI Clock = PCLK / 2^(BR+1)
      */
-    dev->instance->CR1 |= 0; /* Default to highest speed (BR=000) */
-    //uhhhhhhhhhhhhhhhhhhhh ^ does does nothing
 
     /* Master mode */
     dev->instance->CR1 |= SPI_CR1_MSTR;
@@ -52,12 +39,12 @@ void StSpiConfig(Spi* spi)
     /* CR2 clear */
     dev->instance->CR2 = 0;
 
-    /*  Set FIFO reception threshold to 8 bits. */
+    /* Set FIFO reception threshold to 8 bits */
     dev->instance->CR2 |= SPI_CR2_FRXTH;
 
     dev->instance->CR2 |= (SPI_CR2_DS_0 | SPI_CR2_DS_1 | SPI_CR2_DS_2);
 
-    /* Enable SPI*/
+    /* Enable SPI */
     dev->instance->CR1 |= SPI_CR1_SPE;
 }
 
@@ -142,7 +129,7 @@ bool StSpiTransact(Spi* spi, const uint8_t* txdata, uint8_t* rxdata,
 {
     StPrivSpi* dev = (StPrivSpi*)spi->priv;
 
-    // Check if line is busy, or if CS fails
+    /* Check if line is busy, or if CS fails */
     if (dev->instance->SR & SPI_SR_BSY)
     {
         return false;

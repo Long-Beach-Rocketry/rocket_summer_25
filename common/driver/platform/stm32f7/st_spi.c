@@ -1,4 +1,3 @@
-
 #include "st_spi.h"
 
 typedef volatile uint8_t* DataReg;
