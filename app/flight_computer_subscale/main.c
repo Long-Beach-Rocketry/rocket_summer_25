@@ -25,7 +25,7 @@ Gpio blue_led;
 int main(void)
 {
 
-        BSP_Init(&usart, &spi, &i2c, &red_led, &green_led, &blue_led);
+    BSP_Init(&usart, &spi, &i2c, &red_led, &green_led, &blue_led);
 
     HAL_Delay(500);  //delete later
 
