@@ -24,7 +24,7 @@ bool BSP_Init(Usart* usart, Spi* spi, I2c* i2c, Gpio* red_led, Gpio* green_led,
 
 void ConfigIrq(void);
 
-void TIM1_UP_TIM16_IRQHandelr(void);
+void TIM1_UP_TIM16_IRQHandler(void);
 
 void USART1_IRQHandler(void);
 

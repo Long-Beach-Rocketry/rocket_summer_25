@@ -3,7 +3,7 @@
 #include "task.h"
 
 #include "flight_computer_subscale_bsp.h"
-#include "stm32l4xx_hal.c"
+#include "stm32l4xx_hal.h" /** TODO: delete later with the Hal delay */
 
 #include "gpio.h"
 #include "i2c.h"
