@@ -14,6 +14,7 @@ target_link_libraries(core INTERFACE
     string
     switches
     timeout
+    motors
 )
 
 target_link_libraries(core INTERFACE driver)
@@ -30,4 +31,5 @@ add_subdirectory(periph)
 add_subdirectory(string)
 add_subdirectory(switches)
 add_subdirectory(timeout)
+add_subdirectory(motors)
 
