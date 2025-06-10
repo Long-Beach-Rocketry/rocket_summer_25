@@ -6,7 +6,6 @@ set(PREPROCESS_DEFS
     -DDEF_FLASH_SIZE=1024K
 )
 
-#add_subdirectory_for(STM32L412 BSP_L412)
 add_subdirectory_for(STM32L476 BSP_L476)
 
 if (TARGET uart_network_bsp)
