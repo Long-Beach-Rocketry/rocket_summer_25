@@ -12,6 +12,7 @@ target_link_libraries(core INTERFACE
     periph
     proto
     string
+    switches
     timeout
 )
 
@@ -27,5 +28,6 @@ add_subdirectory(memory)
 add_subdirectory(periph)
 add_subdirectory(proto)
 add_subdirectory(string)
+add_subdirectory(switches)
 add_subdirectory(timeout)
 
