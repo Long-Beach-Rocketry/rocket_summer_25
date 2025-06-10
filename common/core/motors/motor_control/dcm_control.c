@@ -1,6 +1,28 @@
 #include "dcm_control.h"
 #include <math.h>
 #include "stm32l4xx_hal.h"
+#include "pid.h"
+
+void initialize(PID_controller* PID, float kp, float ki, float kd, float setpoint){
+    PID->kp = kp;
+    PID->ki = ki;
+    PID->kd = kd;
+    PID->P = 0;
+    PID->setpoint = setpoint;
+    PID->I = 0;
+    PID->D = 0;
+    PID->prev_error = 0;
+}
+
+float update(PID_controller* PID, float current_value, float dt){
+    /*Note: P is the error*/
+    PID->P = PID->setpoint - current_value;
+    PID->I += PID->P * dt;
+    PID->D = (PID->P - PID->prev_error) / dt;
+    PID->prev_error = PID->P;
+    float equation = (PID->kp * PID->P) + (PID->ki * PID->I) + (PID->kd * PID->D);
+    return equation;
+}
 
 void DCM_Control_Init(DCM_Control* control, DCMotor* motor,
                       size_t pulse_per_rev, QEnc* enc)
@@ -59,6 +81,7 @@ bool DcmControlUpdate(DCM_Control* control)
                 control->state = RUNNING;
                 break;
             case RUNNING:
+                PID = initialize(0.1, 0.01, 0.01, control->cmd_degrees);
                 size_t delta;
                 if (control->curr_enc >= control->prev_enc)
                     delta = control->curr_enc -
@@ -83,6 +106,7 @@ bool DcmControlUpdate(DCM_Control* control)
                     // control->state = CCW;
                     break;
                 }
+                control->cmd_degrees = update(PID*, control->cmd_degrees, delta);
             // case CCW:
             //     control->diff += (control->curr_pos - control->prev_pos);
             //     if (fabs(control->diff) < fabs(control->target_count))
