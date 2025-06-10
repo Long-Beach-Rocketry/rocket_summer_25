@@ -15,6 +15,10 @@ target_link_libraries(core INTERFACE
     switches
     timeout
     motors
+<<<<<<< HEAD
+=======
+
+>>>>>>> a476dda1f3337ca90f54259427c7c27c974583df
 )
 
 target_link_libraries(core INTERFACE driver)

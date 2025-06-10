@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 #include "pwm_app_bsp.h"
 
@@ -5,6 +6,14 @@
 
 static Mem memory;
 static uint8_t driver_mem[DRIVER_MEM_SIZE] = {0};
+=======
+#include "pwm_app_bsp.h"
+
+static StPrivPwm st_pwm;
+static size_t base_address = TIM2_BASE;
+static size_t mc_clock = 84000000;
+static StGpioParams led_stgpio = {{0}, GPIOA_BASE, 5, {ALT_FUNC, 0, 0, 0, 0x1}};
+>>>>>>> a476dda1f3337ca90f54259427c7c27c974583df
 
 bool BSP_Init(Usart* usart, Pwm* pwm, Gpio* led_gpio)
 {

@@ -16,24 +16,18 @@
 Pwm pwm;
 DCMotor motor;
 DCM_Control control;
-QEnc enc;
-Gpio brake, direction, gpio_pwm, channel_a, channel_b;
-Usart usart;
+Gpio brake, direction, gpio_pwm;
 
 void dcm_test(void)
 {
-    // static const uint8_t data[] = "hi";
-    // if (control.diff <= control.target_count)
-    //     DcmControlUpdate(&control);
-    // else
-    // {
-    //     // DCM_Control_Init(&control, &motor, 100);
-    //     DcmControlCommand(&control, true, 300);
-    //     control.dir = 0;
-    // }
-
-    DcmControlUpdate(&control);
-    // usart.send(&usart, &data[0], 0);
+    if (control.diff <= control.target_count)
+        DcmControlUpdate(&control);
+    else
+    {
+        // DCM_Control_Init(&control, &motor, 100);
+        DcmControlCommand(&control, true, 300);
+        control.dir = 0;
+    }
 
     // HAL_Delay(100);
 }
@@ -41,10 +35,9 @@ void dcm_test(void)
 int main(void)
 {
 
-    BSP_Init(&enc, &channel_a, &channel_b, &motor, &control, &brake, &direction,
-             &gpio_pwm, &pwm, &usart);
+    BSP_Init(&motor, &control, &pwm, &brake, &direction, &gpio_pwm);
 
-    DcmControlCommand(&control, true, 160300);
+    DcmControlCommand(&control, true, 300);
 
     create_main_loop(dcm_test, 10);
 
