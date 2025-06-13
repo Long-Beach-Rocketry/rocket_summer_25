@@ -20,5 +20,5 @@
 #include "read_w25q_id.h"
 #include "reset_cmd.h"
 
-void SubscaleAppCreateRayne(Usart* usart, Spi* spi, I2c* i2c, Gpio* led_gpio,
-                            ResetFunc reset);
+void SubscaleAppCreateRayne(Usart* usart, Spi* spi, I2c* i2c, Gpio* red_gpio,
+                            Gpio* green_gpio, Gpio* blue_gpio, ResetFunc reset);

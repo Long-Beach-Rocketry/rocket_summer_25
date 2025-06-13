@@ -32,7 +32,8 @@ int main(void)
      */
     //HAL_Delay(500);
 
-    SubscaleAppCreateRayne(&usart, &spi, &i2c, &red_led, SystemReset);
+    SubscaleAppCreateRayne(&usart, &spi, &i2c, &red_led, &green_led, &blue_led,
+                           SystemReset);
     ConfigIrq();
 
     /* Start the scheduler to start the tasks executing. */
