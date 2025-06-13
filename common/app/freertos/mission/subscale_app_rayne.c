@@ -31,6 +31,13 @@ static void loop_func(void)
     logger_update(&logger);
 }
 
+static void init(void)
+{
+    vTaskDelay(10);
+    Bno055_Set_Mode(&bno, BNO055_IMU_MODE);
+    Bmp390_Config(&bmp);
+}
+
 void SubscaleAppCreateRayne(Usart* usart, Spi* spi, I2c* i2c, Gpio* led_gpio,
                             ResetFunc reset)
 {
@@ -43,10 +50,9 @@ void SubscaleAppCreateRayne(Usart* usart, Spi* spi, I2c* i2c, Gpio* led_gpio,
 
     W25qInit(&flash, spi, 0xFFFFFF);
     Bno055_Init(&bno, i2c, BNO055_DEV_ADDR_GND);
-    Bno055_Set_Mode(&bno, BNO055_IMU_MODE);
     Bmp390_Init(&bmp, i2c, BMP390_DEV_ADDR_GND);
-    Bmp390_Config(&bmp);
-    Bno055_Set_Mode(&bno, BNO055_IMU_MODE);
+
+    // Bno055_Set_Mode(&bno, BNO055_IMU_MODE);  //why is this here twice
 
     W25qLoggerInit(&sub, &flash_log, &flash, flash.mem_size / flash.page_size);
     BulkLoggerInit(&bulk_sub, &bulk_priv, &sub, 4, '|', data,
@@ -63,5 +69,5 @@ void SubscaleAppCreateRayne(Usart* usart, Spi* spi, I2c* i2c, Gpio* led_gpio,
     init_read_w25q_id(cli.comm, spi);
     init_reset_cmd(&cli, reset);
 
-    create_main_loop(loop_func, 20);
+    create_main_loop(init, loop_func, 20);
 }

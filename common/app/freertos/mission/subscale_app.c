@@ -28,6 +28,11 @@ static void loop_func(void)
     led->toggle(led);
 }
 
+static void init(void)
+{
+    //lmao
+}
+
 void SubscaleAppCreate(Usart* usart, Spi* spi, I2c* i2c, Gpio* led_gpio,
                        ResetFunc reset)
 {
@@ -60,5 +65,5 @@ void SubscaleAppCreate(Usart* usart, Spi* spi, I2c* i2c, Gpio* led_gpio,
     init_read_w25q_id(cli.comm, spi);
     init_reset_cmd(&cli, reset);
 
-    create_main_loop(loop_func, 20);
+    create_main_loop(init, loop_func, 20);
 }
