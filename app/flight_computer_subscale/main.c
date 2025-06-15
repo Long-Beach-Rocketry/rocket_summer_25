@@ -24,13 +24,9 @@ Gpio blue_led;
 
 int main(void)
 {
-
     BSP_Init(&usart, &spi, &i2c, &red_led, &green_led, &blue_led);
 
-    /** TODO: delete this and replace set up all sensors in rtos and not in subscale app create because IMU starts slow.
-     *  Hal delay is not reuseable.
-     */
-    //HAL_Delay(500);
+    // TODO: make a app bsp for so we can share app create but they pull from different things TODODODODODO
 
     SubscaleAppCreateRayne(&usart, &spi, &i2c, &red_led, &green_led, &blue_led,
                            SystemReset);
