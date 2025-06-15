@@ -4,7 +4,6 @@
 #include "main_loop.h"
 #include "uart_lbr_net.h"
 #include "uart_network_bsp.h"
-//#include "uart_network_test_app.h"
 
 #define ADDRESS 66
 #define RECEIVER_ADDRESS 41

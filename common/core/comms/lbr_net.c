@@ -44,11 +44,7 @@ void read_byte(Bus* self, uint8_t data)
         switch (self->state)
         {
             case IDLE:
-                if (data == NACK)
-                {
-                    self->state = FAIL;
-                }
-                else if (data == START_TRANSMISSION)
+                if (data == START_TRANSMISSION)
                 {
                     self->state = READ_ADDRESS;
                     memset(self->receive_buffer, 0,
@@ -61,11 +57,6 @@ void read_byte(Bus* self, uint8_t data)
 
                     self->receive_index += 1;
                 }
-                else if (data == ACK)
-                {
-                    self->state = ACKNOWLEDGED;
-                }
-                break;
             case READ_ADDRESS:
                 if (data == self->address)
                 {
@@ -100,7 +91,7 @@ void read_byte(Bus* self, uint8_t data)
                 self->sum = self->sum % 256;
                 if (self->sum != data)
                 {
-                    self->state = FAIL;
+                    self->state = IDLE;
                     self->receive_buffer[self->receive_index] = data;
                     self->receive_index += 1;
                 }
@@ -111,8 +102,6 @@ void read_byte(Bus* self, uint8_t data)
                     self->receive_index += 1;
                 }
 
-                break;
-            case FAIL:
                 break;
             default:
                 break;

@@ -53,26 +53,6 @@ TEST_F(FormatTests, pack_test)
 }
 
 /**
- * @brief Test to make sure NACK changes state to ERROR.
- */
-TEST_F(ReadCharTests, idle_to_error_test)
-{
-    lbr_net_node_init(&bus, ADDRESS);
-    bus.read_byte(&bus, NACK);
-    EXPECT_EQ(bus.state, FAIL);
-}
-
-/**
- * @brief Test to make sure ACK changes state to ACK.
- */
-TEST_F(ReadCharTests, idle_to_ack_test)
-{
-    lbr_net_node_init(&bus, ADDRESS);
-    bus.read_byte(&bus, ACK);
-    EXPECT_EQ(bus.state, ACKNOWLEDGED);
-}
-
-/**
  * @brief Test to make sure wrong address goes back to idle.
  */
 TEST_F(ReadCharTests, idle_to_wrong_address_test)
@@ -109,7 +89,7 @@ TEST_F(ReadCharTests, idle_to_success_then_flush)
 }
 
 /**
- * @brief Test that a wrong checksum will result in an error.
+ * @brief Test that a wrong checksum will result in going back to IDLE.
  */
 TEST_F(ReadCharTests, idle_wrong_checksum)
 {
@@ -119,7 +99,7 @@ TEST_F(ReadCharTests, idle_wrong_checksum)
     {
         bus.read_byte(&bus, data[i]);
     }
-    EXPECT_EQ(bus.state, FAIL);
+    EXPECT_EQ(bus.state, IDLE);
 }
 
 /**

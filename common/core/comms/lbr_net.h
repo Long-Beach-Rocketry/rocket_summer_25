@@ -26,7 +26,6 @@
 typedef enum
 {
     IDLE,
-    FAIL,
     ACKNOWLEDGED,
     READ_ADDRESS,
     READ_LEN,
@@ -41,8 +40,8 @@ Control flags for protocol.
 typedef enum
 {
     START_TRANSMISSION = '!',
-    ACK = '+',
-    NACK = '-'
+    //ACK = '+',
+    //NACK = '-'
 } ControlFlags;
 
 /**
