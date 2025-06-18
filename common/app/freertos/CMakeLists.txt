@@ -8,6 +8,7 @@ target_include_directories(freertos_app PUBLIC
     cli
     mission
     timeout
+    motor_control
 )
 
 target_link_libraries(freertos_app PUBLIC

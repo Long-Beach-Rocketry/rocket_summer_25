@@ -1,4 +1,5 @@
 #include "dcm_app_bsp.h"
+#include "FreeRTOS.h"
 #include "stm32l4xx_hal.h"
 
 static DCPosControl st_motor;
@@ -9,30 +10,32 @@ static uint8_t driver_mem[DRIVER_MEM_SIZE] = {0};
 static StQenc st_enc;
 static StPrivPwm st_pwm;
 
-static StGpioParams direction_param = {{0},
-                                       GPIOA_BASE,
-                                       0,
-                                       {GPOUT, 0, 0, 0, 0x0}};  //PIN PA0
+static StGpioParams direction_param = {
+    {0},
+    GPIOA_BASE,
+    0,
+    {GPOUT, 0, 0, 0, 0x0}};  //Direction PIN PA0
 static StGpioParams brake_param = {{0},
                                    GPIOA_BASE,
                                    1,
-                                   {GPOUT, 0, 0, 0, 0x0}};  //PIN PA1
-static StGpioParams pwm_param = {{0},
-                                 GPIOA_BASE,
-                                 5,
-                                 {ALT_FUNC, 0, 0, 0, 0x1}};  //TIM2 channel 1
+                                   {GPOUT, 0, 0, 0, 0x0}};  //Brake PIN PA1
+static StGpioParams pwm_param = {
+    {0},
+    GPIOA_BASE,
+    5,
+    {ALT_FUNC, 0, 0, 0, 0x1}};  //PWM TIM2 channel 1 // PA 5
 
 static StGpioParams channel_a_param = {
     {0},
     GPIOA_BASE,
     6,
-    {ALT_FUNC, 0, 0, 0, 0x2}};  //TIM3 channel 1
+    {ALT_FUNC, 0, 0, 0, 0x2}};  //TIM3 channel 1 //PA 6
 
 static StGpioParams channel_b_param = {
     {0},
     GPIOA_BASE,
     7,
-    {ALT_FUNC, 0, 0, 0, 0x2}};  //TIM3 channel 2
+    {ALT_FUNC, 0, 0, 0, 0x2}};  //TIM3 channel 2 //PA 7
 
 #define EXIT_IF_FAIL(cond) EXIT_IF(!(cond), false)
 
@@ -79,8 +82,10 @@ bool BSP_Init(QEnc* enc, Gpio* channel_a, Gpio* channel_b, DCMotor* motor,
 
     StPwmInit(pwm, &st_pwm, TIM2_BASE, 84000000);
 
+    StPwmSetFreq(pwm, 25);
+
     StDcmInit(motor, &st_motor, brake, direction, pwm);
-    DCM_Control_Init(control, motor, 100, enc);
+    DCM_Control_Init(control, motor, 400, enc);
 
     return true;
 }

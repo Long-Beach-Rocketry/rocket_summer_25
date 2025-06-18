@@ -32,6 +32,7 @@ bool StPwmEnable(Pwm* pwm, bool enable)
         dev->instance->CCMR1 |= TIM_CCMR1_OC1PE;
         //enabling channel 1, setting polarity active high
         dev->instance->CCER &= ~TIM_CCER_CC1P;
+        dev->instance->CCER &= ~TIM_CCER_CC1NP;
         dev->instance->CCER |= TIM_CCER_CC1E;
         //configuring TIMX
         dev->instance->CR1 |= TIM_CR1_ARPE;
@@ -60,10 +61,10 @@ void StPwmSetFreq(Pwm* pwm, size_t hz)
     StPrivPwm* dev = (StPrivPwm*)pwm->priv;
 
     dev->period = 1000 / hz;
-    size_t DesiredPSC = ((dev->clock) / 65535) / hz;
+    size_t DesiredPSC = ((dev->clock) / UINT32_MAX) / hz;
 
     dev->instance->PSC = DesiredPSC - 1;
-    dev->instance->ARR = 65535 - 1;
+    dev->instance->ARR = UINT32_MAX - 1;
 }
 
 void StPwmDuty(Pwm* pwm, double duty)

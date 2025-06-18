@@ -17,7 +17,7 @@ target_link_libraries(core INTERFACE
     motors
 )
 
-target_link_libraries(core INTERFACE driver)
+target_link_libraries(core INTERFACE driver )
 
 add_subdirectory(cli)
 add_subdirectory(comms)

@@ -1,12 +1,11 @@
 
 add_library(motors STATIC 
     #encoder/drv8242_enc.c 
-    #motor_control/dcm_control.c
+    # motor_control/dcm_control.c
     # DC/fake_dcm.c
     # encoder/fake_enc.c
     motor_control/fake_dcm_control.c
     DC/st_dcm.c
-    motor_control/dcm_control.c
     encoder/st_enc.c
 )
 
