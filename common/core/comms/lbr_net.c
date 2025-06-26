@@ -67,7 +67,11 @@ void read_byte(Bus* self, uint8_t data)
                 }
                 else
                 {
-                    self->state = IDLE;
+                    printf(
+                        "currently in read address, this is my address %d, "
+                        "this is data %d\n",
+                        self->address, data);
+                    self->state = 100;  // change
                 }
                 break;
             case READ_LEN:

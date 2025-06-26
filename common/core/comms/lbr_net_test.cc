@@ -53,13 +53,32 @@ TEST_F(FormatTests, pack_test)
 }
 
 /**
+ * @brief Test to see if we read data size if the address is correct.
+ */
+TEST_F(ReadCharTests, idle_to_right_address_test)
+{
+    const uint8_t data[] = {START_TRANSMISSION, ADDRESS}; /*right address*/
+    lbr_net_node_init(&bus, ADDRESS);
+    bus.address = IDLE;
+    printf("MY STATE IS %d\n", bus.state);
+    EXPECT_EQ(bus.state, IDLE);
+    printf("BUS IS IN IDLE NOW SENDING START TRANS\n");
+    bus.read_byte(&bus, data[0]);
+    EXPECT_EQ(bus.state, READ_ADDRESS);
+    printf("DONE SENDING AND CHECKIGN THE ADDRESS\n");
+    printf("CHECK\n") bus.read_byte(&bus, data[1]);
+    printf("CHECKING IF THE ADDRESS IS THE SAME\n");
+    EXPECT_EQ(bus.state, READ_LEN);
+}
+
+/**
  * @brief Test to make sure wrong address goes back to idle.
  */
 TEST_F(ReadCharTests, idle_to_wrong_address_test)
 {
-
     const uint8_t data[] = {START_TRANSMISSION, ADDRESS + 1}; /*wrong address*/
     lbr_net_node_init(&bus, ADDRESS);
+    EXPECT_EQ(bus.state, IDLE);
     bus.read_byte(&bus, data[0]);
     EXPECT_EQ(bus.state, READ_ADDRESS);
     bus.read_byte(&bus, data[1]);
@@ -71,7 +90,7 @@ TEST_F(ReadCharTests, idle_to_wrong_address_test)
  */
 TEST_F(ReadCharTests, idle_to_success_then_flush)
 {
-    uint8_t sum = ('!' + ADDRESS + 2 + 'P' + 'f') % 256;
+    uint8_t sum = (START_TRANSMISSION + ADDRESS + 2 + 'P' + 'f') % 256;
     const uint8_t data[] = {'!', ADDRESS, 2, 'P', 'f', sum};
     const uint8_t msg[] = {'P', 'f'};
     lbr_net_node_init(&bus, ADDRESS);

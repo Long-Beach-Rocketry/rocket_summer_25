@@ -15,19 +15,22 @@ public:
     uint8_t data[BUF_SIZE];
 };
 
+// needed for the linker
+constexpr size_t RingBufferTest::BUF_SIZE;
+
 TEST_F(RingBufferTest, InitTest)
 {
-    ring_buffer_init(&buf, data, BUF_SIZE);
+    ring_buffer_init(&buf, data, RingBufferTest::BUF_SIZE);
     EXPECT_EQ(buf.data, data);
     EXPECT_EQ(buf.head, 0);
     EXPECT_EQ(buf.tail, 0);
-    EXPECT_EQ(buf.max_len, BUF_SIZE);
+    EXPECT_EQ(buf.max_len, RingBufferTest::BUF_SIZE);
 }
 
 TEST_F(RingBufferTest, InsertAndPopTest)
 {
-    ring_buffer_init(&buf, data, BUF_SIZE);
-    for (size_t i = 0; i < BUF_SIZE; ++i)
+    ring_buffer_init(&buf, data, RingBufferTest::BUF_SIZE);
+    for (size_t i = 0; i < RingBufferTest::BUF_SIZE; ++i)
     {
         EXPECT_TRUE(ring_buffer_insert(&buf, i));
     }
@@ -35,7 +38,7 @@ TEST_F(RingBufferTest, InsertAndPopTest)
     EXPECT_FALSE(ring_buffer_insert(&buf, 0));
 
     uint8_t data = 0;
-    for (size_t i = 0; i < BUF_SIZE; ++i)
+    for (size_t i = 0; i < RingBufferTest::BUF_SIZE; ++i)
     {
         EXPECT_TRUE(ring_buffer_pop(&buf, &data));
         EXPECT_EQ(i, data);

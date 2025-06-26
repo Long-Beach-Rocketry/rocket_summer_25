@@ -26,7 +26,6 @@
 typedef enum
 {
     IDLE,
-    ACKNOWLEDGED,
     READ_ADDRESS,
     READ_LEN,
     READ_DATA,

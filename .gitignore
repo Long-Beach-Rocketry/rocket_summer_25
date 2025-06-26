@@ -8,3 +8,5 @@ CMakeCache.txt
 *settings.json
 .vscode
 **/venv
+.clangd
+compile_commands.json
