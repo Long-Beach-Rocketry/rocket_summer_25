@@ -85,28 +85,6 @@ bool DcmControlUpdate(DCM_Control* control)
                     control->delta_time = control->count - control->prev_count;
                     control->velocity = (float)(delta / control->delta_time);
                     control->diff += delta;
-
-                    //pid
-                    control->velcoity_error =
-                        (int16_t)(control->target_velocity - control->velocity);
-
-                    control->integral_error +=
-                        (int16_t)(control->velcoity_error *
-                                  control->delta_time);
-
-                    control->pid_signal =
-                        (int16_t)(control->constant * control->velcoity_error) +
-                        (int16_t)(control->integral_constant *
-                                  control->integral_error);
-
-                    if (control->pid_signal > 100)
-                    {
-                        control->pid_signal =
-                            100;  //capping pwm freq to 100% duty cycle
-                    }
-
-                    // control->motor->priv->pwm->setFreq(
-                    // control->motor->priv->pwm, control->pid_signal);
                 }
                 else
                 {
