@@ -66,7 +66,8 @@ TEST_F(ReadCharTests, idle_to_right_address_test)
     bus.read_byte(&bus, data[0]);
     EXPECT_EQ(bus.state, READ_ADDRESS);
     printf("DONE SENDING AND CHECKIGN THE ADDRESS\n");
-    printf("CHECK\n") bus.read_byte(&bus, data[1]);
+    printf("CHECK\n");
+	bus.read_byte(&bus, data[1]);
     printf("CHECKING IF THE ADDRESS IS THE SAME\n");
     EXPECT_EQ(bus.state, READ_LEN);
 }

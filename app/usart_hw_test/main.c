@@ -15,7 +15,7 @@ Gpio led_gpio;
 
 int main(void)
 {
-
+	
     BSP_Init(&cli_usart, &comm_usart, &led_gpio);
 
     /* Start the scheduler to start the tasks executing. */
