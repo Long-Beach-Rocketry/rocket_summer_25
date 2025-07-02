@@ -7,3 +7,6 @@ CMakeCache.txt
 *.cortex-debug*
 *settings.json
 .vscode
+.clangd
+.cache
+compile_commands.json
