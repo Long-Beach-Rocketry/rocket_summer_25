@@ -2,8 +2,11 @@
 
 extern "C"
 {
-#include "fake_dcm.h"
+#include "dcm_control.h"
 #include "fake_enc.h"
+#include "gpio.h"
+#include "pwm.h"
+#include "st_dcm.h"
 }
 
 class Drv8242EncTest : public testing::Test
@@ -13,19 +16,23 @@ public:
     DCMotor motor;
     MotorRotoationCtrler controller;
     DCPosControl motor_control;
+    Gpio brake, direction;
+    Pwm pwm;
+    DCM_Control st_control;
 };
 
 TEST_F(Drv8242EncTest, InitTest)
 {
     QEnc_Init(&qenc, &controller, &motor);
-    FakeInit(&motor, &motor_control);  //segfalt
-    EXPECT_EQ(controller.ppr, 100);
-    EXPECT_EQ(get_fake_ticks(&qenc), 0);
-    EXPECT_EQ(controller.command_rotate(&controller, 10), false);
+    StDcmInit(&motor, &motor_control, &brake, &direction, &pwm);
+    EXPECT_EQ(st_control.pusle_per_rev, 400);
+    EXPECT_EQ(qenc.getTicks(&qenc), 0);
+    DcmControlCommand(&st_control, true, 30000);
     controller.cmd = true;
-    EXPECT_EQ(controller.command_rotate(&controller, 10), true);  //segfault
-    EXPECT_EQ(controller.start_pos, 0);
-    EXPECT_EQ(controller.update(&controller), true);  //NANI??
-    EXPECT_EQ(fake_increment(&qenc, 10000), 10000);
-    EXPECT_EQ(controller.update(&controller), false);
+    DcmControlCommand(&st_control, true, 30000);  //segfault
+    EXPECT_EQ(qenc.getTicks(&qenc), 0);
+    DcmControlUpdate(&st_control);
+    EXPECT_EQ(fake_increment(&qenc, 30000), 30000);
+    DcmControlUpdate(&st_control);
+    EXPECT_EQ(qenc.getTicks(&qenc), 30000);
 }

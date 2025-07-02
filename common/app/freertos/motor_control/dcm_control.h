@@ -44,7 +44,7 @@ struct DCM_Control
     float velocity;
     volatile size_t count;
     size_t prev_count;
-    int16_t diff;
+    size_t diff;
     int16_t delta_time;
     // int16_t delta;
     size_t target_velocity;

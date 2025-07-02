@@ -44,7 +44,9 @@ int main(void)
     BSP_Init(&enc, &channel_a, &channel_b, &motor, &control, &brake, &direction,
              &gpio_pwm, &pwm, &usart);
 
-    DcmControlCommand(&control, true, 20000);
+    control.dir = 1;
+
+    DcmControlCommand(&control, true, 30080);
 
     create_main_loop(dcm_test, 10);
 

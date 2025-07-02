@@ -28,9 +28,6 @@ struct MotorRotoationCtrler
     size_t start_pos;
     bool cmd;
     bool dir;
-
-    bool (*command_rotate)(MotorRotoationCtrler* controller, double degrees);
-    bool (*update)(MotorRotoationCtrler* controller);
 };
 
 void QEnc_Init(QEnc* qenc, MotorRotoationCtrler* params, DCMotor* motor);
