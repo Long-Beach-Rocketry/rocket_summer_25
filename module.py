@@ -20,7 +20,7 @@ class Window(QMainWindow): #creating window for the Qtable to display (inheritan
         #print(rows) 
         for i in range(rows): #for loop to add items from the list into the table
             item = QTableWidgetItem(insert[i]) #creates the widget item 
-            self.columns.setItem(i, 1, item) #adding the item 
+            self.columns.setItem(i, 0, item) #adding the item 
 class Protodisplay: #creating a class called protodisplay   
     def __init__(self, newlist): #initializing variables (list)
         self.newlist = newlist 
