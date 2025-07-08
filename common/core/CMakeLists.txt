@@ -7,7 +7,6 @@ target_link_libraries(core INTERFACE
     container
     error
     gnc
-    lbr_net
     math
     memory
     periph
@@ -24,7 +23,6 @@ add_subdirectory(comms)
 add_subdirectory(container)
 add_subdirectory(error)
 add_subdirectory(gnc)
-add_subdirectory(lbr_net)
 add_subdirectory(math)
 add_subdirectory(memory)
 add_subdirectory(periph)

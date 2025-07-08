@@ -7,10 +7,7 @@ CMakeCache.txt
 *.cortex-debug*
 *settings.json
 .vscode
-<<<<<<< HEAD
-**/venv
-=======
+.venv
 .clangd
->>>>>>> main
 .cache
 compile_commands.json
