@@ -15,3 +15,7 @@ if ("${TARGET_DEVICE}" MATCHES "NATIVE")
     set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
     add_subdirectory(googletest)
 endif()
+
+#probably should be changed later but just trying to make it work
+add_subdirectory(nanopb)
+

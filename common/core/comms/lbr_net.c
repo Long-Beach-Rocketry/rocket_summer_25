@@ -13,7 +13,7 @@ void lbr_net_node_init(Bus* sender, uint8_t address)
 }
 
 bool pack(Bus* self, uint8_t* buffer, uint16_t buffer_size, uint8_t target,
-          const uint8_t* data, uint8_t data_size)
+          uint8_t* data, uint8_t data_size)
 {
     uint8_t index = 0;
     uint32_t sum = 0;

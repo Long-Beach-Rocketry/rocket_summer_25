@@ -46,4 +46,4 @@ There are reference launch.json files found in the repository already under .vsc
 ## Developing
 Install clang-format to auto-format your code - on Windows, try ```<python> -m pip install clang-format```. On Linux, try ```sudo apt install clang-format```. In VSCode, you can go to settings > Text Editor > Formatting > Format On Save to enable auto-formatting on save.
 
-To run native unit tests, you can open a PR on Github or build for native, then cd to build/native and run ```ctest```.
+To run native unit tests, you can open a PR on Github or build for native, then run ```pushd build/native; ctest; popd```

@@ -5,8 +5,13 @@
 #include <cstdio>
 extern "C"
 {
+#include <pb_decode.h>
+#include <pb_encode.h>
 #include <string.h>
+#include "cmd_message.h"
+#include "example.pb.h"
 #include "lbr_net.h"
+#include "pb_cmd.h"
 }
 
 #define ADDRESS 70
@@ -36,11 +41,10 @@ public:
  */
 TEST_F(FormatTests, pack_test)
 {
-    const uint8_t data[10] = "f";
-    const uint8_t expected_checksum =
-        (START_TRANSMISSION + ADDRESS + 1 + 'f') % 256;
-    const uint8_t expected_buf[] = {START_TRANSMISSION, ADDRESS, 1, 'f',
-                                    expected_checksum};
+    uint8_t data[10] = "f";
+    uint8_t expected_checksum = (START_TRANSMISSION + ADDRESS + 1 + 'f') % 256;
+    uint8_t expected_buf[] = {START_TRANSMISSION, ADDRESS, 1, 'f',
+                              expected_checksum};
     uint8_t packed[256] = {0};
     lbr_net_node_init(&bus, ADDRESS);
     bus.pack(&bus, packed, sizeof(packed), ADDRESS, data, 1);
@@ -73,7 +77,7 @@ TEST_F(ReadCharTests, idle_to_ack_test)
 TEST_F(ReadCharTests, idle_to_wrong_address_test)
 {
 
-    const uint8_t data[] = {START_TRANSMISSION, ADDRESS + 1}; /*wrong address*/
+    uint8_t data[] = {START_TRANSMISSION, ADDRESS + 1}; /*wrong address*/
     lbr_net_node_init(&bus, ADDRESS);
     bus.read_byte(&bus, data[0]);
     EXPECT_EQ(bus.state, READ_ADDRESS);
@@ -87,8 +91,8 @@ TEST_F(ReadCharTests, idle_to_wrong_address_test)
 TEST_F(ReadCharTests, idle_to_success_then_flush)
 {
     uint8_t sum = ('!' + ADDRESS + 2 + 'P' + 'f') % 256;
-    const uint8_t data[] = {'!', ADDRESS, 2, 'P', 'f', sum};
-    const uint8_t msg[] = {'P', 'f'};
+    uint8_t data[] = {'!', ADDRESS, 2, 'P', 'f', sum};
+    uint8_t msg[] = {'P', 'f'};
     lbr_net_node_init(&bus, ADDRESS);
     for (int i = 0; i < sizeof(data); i++)
     {
@@ -108,7 +112,7 @@ TEST_F(ReadCharTests, idle_to_success_then_flush)
  */
 TEST_F(ReadCharTests, idle_wrong_checksum)
 {
-    const char data[] = {'!', ADDRESS, 2, 'P', 'f', 32};
+    char data[] = {'!', ADDRESS, 2, 'P', 'f', 32};
     lbr_net_node_init(&bus, ADDRESS);
     for (int i = 0; i < sizeof(data); i++)
     {
@@ -122,10 +126,10 @@ TEST_F(ReadCharTests, idle_wrong_checksum)
  */
 TEST_F(FormatTests, encode_decode_test)
 {
-    const uint8_t data[5] = {'c', 'a', 'f', 'e', 's'};
-    const uint8_t expected_checksum =
+    uint8_t data[5] = {'c', 'a', 'f', 'e', 's'};
+    uint8_t expected_checksum =
         (START_TRANSMISSION + ADDRESS + 5 + 'c' + 'a' + 'f' + 'e' + 's') % 256;
-    const uint8_t expected_buf[] = {
+    uint8_t expected_buf[] = {
         START_TRANSMISSION, ADDRESS, 5, 'c', 'a', 'f', 'e', 's',
         expected_checksum};
     uint8_t packed[256] = {0};

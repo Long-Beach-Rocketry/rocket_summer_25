@@ -32,10 +32,33 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up CMake
-        uses: lukka/get-cmake@latest
-        with:
-          cmake-version: "3.27"
+    - name: Set up CMake
+      uses: lukka/get-cmake@latest
+      with:
+        cmake-version: '3.27'
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    - name: Install compatible Python dependencies for Nanopb
+      run: |
+        pip install protobuf==3.20.* grpcio-tools
+
+    - name: Install Protobuf compiler and C++ library
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y protobuf-compiler libprotobuf-dev
+
+    - name: Pull git submodules
+      run: |
+        git submodule update --init --recursive
+    
+    - name: Install GNU Arm Embedded Toolchain
+      uses: ryanwinter/arm-none-eabi-gcc@master
+      with:
+        release: '10.3-2021.10'
 
       - name: Pull git submodules
         run: |
@@ -90,10 +113,35 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+<<<<<<< HEAD
+    - name: Set up CMake
+      uses: lukka/get-cmake@latest
+      with:
+        cmake-version: '3.27'
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    - name: Install compatible Python dependencies for Nanopb
+      run: |
+        pip install protobuf==3.20.* grpcio-tools
+
+    - name: Install Protobuf compiler and C++ library
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y protobuf-compiler libprotobuf-dev
+
+    - name: Pull git submodules
+      run: |
+        git submodule update --init --recursive
+=======
       - name: Set up CMake
         uses: lukka/get-cmake@latest
         with:
           cmake-version: "3.27"
+>>>>>>> main
 
       - name: Pull git submodules
         run: |

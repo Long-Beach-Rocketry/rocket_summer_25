@@ -88,6 +88,7 @@ endfunction()
 
 function(add_tests LINK_LIB)
     if ("${TARGET_DEVICE}" MATCHES "NATIVE")
+		set(CMAKE_CXX_STANDARD 20)
 
         include(CTest)
         include(GoogleTest)
