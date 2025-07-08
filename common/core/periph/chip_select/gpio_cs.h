@@ -1,16 +1,20 @@
 
 #pragma once
 
+#include "alloc.h"
+#include "exit.h"
 #include "gpio.h"
 #include "spi.h"
 
 typedef struct
 {
     bool activeLow;
-    Gpio pin;
+    Gpio* pin;
 } GpioChipSelect;
 
-void GpioCsInit(ChipSelect* cs, GpioChipSelect* gpio_cs, bool activeLow);
+ChipSelect* MakeGpioCs(Mem* mem, Gpio* pin, bool activeLow);
+void GpioCsInit(ChipSelect* cs, GpioChipSelect* gpio_cs, Gpio* pin,
+                bool activeLow);
 void GpioCsConfig(ChipSelect* cs);
 bool GpioCsSelect(ChipSelect* cs);
 bool GpioCsDeselect(ChipSelect* cs);

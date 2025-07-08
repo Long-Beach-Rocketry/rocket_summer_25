@@ -9,6 +9,9 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#include "alloc.h"
+#include "exit.h"
+
 typedef struct
 {
     uint8_t* data;
@@ -17,6 +20,8 @@ typedef struct
     size_t max_len;
     size_t curr_size;
 } RingBuffer;
+
+RingBuffer* make_ring_buffer(Mem* mem, size_t size);
 
 void ring_buffer_init(RingBuffer* rb, uint8_t* data, size_t size);
 

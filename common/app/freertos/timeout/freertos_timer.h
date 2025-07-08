@@ -12,6 +12,8 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
+#include "alloc.h"
+
 /**
  * Data necessary for each timer instance.
  */
@@ -43,3 +45,5 @@ bool frt_timer_tick(void* data);
  * @param duration_ms number of milliseconds to wait.
  */
 void frt_timer_init(Timeout* timer, FrtTimerData* frt, TickType_t duration_ms);
+
+Timeout* make_frt_timer(Mem* mem, TickType_t duration_ms);

@@ -15,8 +15,6 @@
 typedef struct
 {
     I2C_TypeDef* instance;
-    Gpio sda;
-    Gpio scl;
     Timeout* timer;
 } StPrivI2c;
 

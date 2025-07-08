@@ -6,6 +6,7 @@ add_executable_for(NATIVE ${EXECUTABLE} ""
 
 target_link_libraries_for(NATIVE ${EXECUTABLE}
     PRIVATE
+        app
         core
         driver
 )
@@ -19,3 +20,5 @@ target_link_libraries_for(ARM32 ${EXECUTABLE}
         core
         driver
 )
+
+configure_file(test_data.log test_data.log COPYONLY)

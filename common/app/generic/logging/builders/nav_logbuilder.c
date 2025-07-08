@@ -16,12 +16,14 @@ void NavDataLogBuilderInit(LogBuilder* builder, NavDataLogBuilder* nav_builder,
 bool NavDataLogBuilderBuildNew(LogBuilder* builder)
 {
     NavDataLogBuilder* nav_builder = (NavDataLogBuilder*)builder->priv;
-    nav_builder->size = (size_t)sprintf(
-        (char*)nav_builder->buffer, "%zu,%.02f,%.02f,%.02f,%.02f,%d,%d,%d",
-        nav_builder->data->tick, nav_builder->data->pressure,
-        nav_builder->data->accel.x, nav_builder->data->accel.y,
-        nav_builder->data->accel.z, nav_builder->data->euler.x,
-        nav_builder->data->euler.y, nav_builder->data->euler.z);
+    nav_builder->size =
+        (size_t)sprintf((char*)nav_builder->buffer,
+                        "%zu,%.02f,%.02f,%.02f,%.02f,%.02f,%.02f,%.02f,%.02f",
+                        nav_builder->data->tick, nav_builder->data->pressure,
+                        nav_builder->data->accel.x, nav_builder->data->accel.y,
+                        nav_builder->data->accel.z, nav_builder->data->quat.w,
+                        nav_builder->data->quat.x, nav_builder->data->quat.y,
+                        nav_builder->data->quat.z);
 
     return true;
 }

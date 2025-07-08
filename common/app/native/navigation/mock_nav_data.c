@@ -1,4 +1,3 @@
-
 #include "mock_nav_data.h"
 
 bool MockNavDataInit(NavData* data, MockNavData* mock, const char* path)
@@ -37,25 +36,31 @@ bool MockNavDataUpdate(NavData* data)
             switch (idx)
             {
                 case 0:
-                    sscanf(value, "%f", &data->pressure);
+                    sscanf(value, "%zu", &data->tick);
                     break;
                 case 1:
-                    sscanf(value, "%f", &data->accel.x);
+                    sscanf(value, "%f", &data->pressure);
                     break;
                 case 2:
-                    sscanf(value, "%f", &data->accel.y);
+                    sscanf(value, "%f", &data->accel.x);
                     break;
                 case 3:
-                    sscanf(value, "%f", &data->accel.z);
+                    sscanf(value, "%f", &data->accel.y);
                     break;
                 case 4:
-                    sscanf(value, "%hd", &data->euler.x);
+                    sscanf(value, "%f", &data->accel.z);
                     break;
                 case 5:
-                    sscanf(value, "%hd", &data->euler.y);
+                    sscanf(value, "%f", &data->quat.w);
                     break;
                 case 6:
-                    sscanf(value, "%hd", &data->euler.z);
+                    sscanf(value, "%f", &data->quat.x);
+                    break;
+                case 7:
+                    sscanf(value, "%f", &data->quat.y);
+                    break;
+                case 8:
+                    sscanf(value, "%f", &data->quat.z);
                     break;
                 default:
                     return false;

@@ -12,7 +12,7 @@ bool SendFormatWrite(Send* send, const char* data, ...)
     char buf[MAX_SEND_LENGTH] = {0};
     va_list vl;
     va_start(vl, data);
-    vsprintf(buf, data, vl);
+    vsnprintf(buf, MAX_SEND_LENGTH, data, vl);
     va_end(vl);
 
     buf[MAX_SEND_LENGTH - 1] = '\0';

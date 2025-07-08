@@ -18,7 +18,7 @@ bool NavSuiteV1Update(NavData* data)
     data->temperature = nav->baro->get_temp_c(nav->baro);
 
     nav->imu->get_accel(nav->imu, &data->accel);
-    nav->imu->get_euler(nav->imu, &data->euler);
+    nav->imu->get_quaternion(nav->imu, &data->quat);
 
     return true;
 }

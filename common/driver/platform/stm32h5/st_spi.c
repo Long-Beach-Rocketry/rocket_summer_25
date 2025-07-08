@@ -15,7 +15,7 @@ void StSpiInit(Spi* spi, StPrivSpi* st_spi, uint32_t base_addr,
     st_spi->handle.Init.CLKPolarity = SPI_POLARITY_LOW;
     st_spi->handle.Init.CLKPhase = SPI_PHASE_1EDGE;
     st_spi->handle.Init.NSS = SPI_NSS_SOFT;
-    st_spi->handle.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_256;
+    st_spi->handle.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_8;
     st_spi->handle.Init.FirstBit = SPI_FIRSTBIT_MSB;
     st_spi->handle.Init.TIMode = SPI_TIMODE_DISABLE;
     st_spi->handle.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;

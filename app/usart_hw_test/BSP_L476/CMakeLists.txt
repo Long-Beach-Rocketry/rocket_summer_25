@@ -9,7 +9,6 @@ target_link_libraries(usart_hw_bsp
         app
         core
         driver
-        st_l4_support
     INTERFACE
         freertos_kernel
 )

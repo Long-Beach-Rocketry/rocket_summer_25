@@ -35,3 +35,12 @@ void frt_timer_init(Timeout* timer, FrtTimerData* frt, TickType_t duration_ms)
     timer->start = frt_timer_start;
     timer->tick = frt_timer_tick;
 }
+
+Timeout* make_frt_timer(Mem* mem, TickType_t duration_ms)
+{
+    Timeout* timer = ALLOC(mem, Timeout);
+    FrtTimerData* frt = ALLOC(mem, FrtTimerData);
+
+    frt_timer_init(timer, frt, duration_ms);
+    return timer;
+}

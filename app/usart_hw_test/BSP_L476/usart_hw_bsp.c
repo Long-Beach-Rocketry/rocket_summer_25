@@ -1,113 +1,90 @@
 
 #include "usart_hw_bsp.h"
-#include "stm32l476xx.h"
 
-static StPrivUsart st_cli_usart;
-static StPrivUsart st_comm_usart;
-static StGpioParams led_stgpio = {{0}, GPIOA_BASE, 5, {GPOUT, 0, 0, 0, 0}};
-static StGpioParams txe_gpio = {{0}, GPIOC_BASE, 12, {1, 0, 0, 0, 0}};
-static StGpioParams rxe_gpio = {{0}, GPIOD_BASE, 2, {1, 0, 0, 0, 0}};
+#define EXIT_IF_FAIL(cond) EXIT_IF(!(cond), false)
 
-// Sequential use of these, so using one is fine. Not thread safe.
-static Timeout time;
-static FrtTimerData frt;
+static Mem memory;
+static uint8_t driver_mem[DRIVER_MEM_SIZE] = {0};
 
-static StGpioParams cli_uart_io1 = {{0},
-                                    GPIOA_BASE,
-                                    2,
-                                    {ALT_FUNC, 0, 0, 0, 0x7}};  // USART2 AF 7
-static StGpioParams cli_uart_io2 = {{0},
-                                    GPIOA_BASE,
-                                    3,
-                                    {ALT_FUNC, 0, 0, 0, 0x7}};  // USART2 AF 7
-
-static StGpioParams comm_uart_io1 = {{0},
-                                     GPIOC_BASE,
-                                     10,
-                                     {ALT_FUNC, 0, 0, 0, 0x7}};  // USART3 AF 7
-static StGpioParams comm_uart_io2 = {{0},
-                                     GPIOC_BASE,
-                                     11,
-                                     {ALT_FUNC, 0, 0, 0, 0x7}};  // USART3 AF 7
-
-static RingBuffer rb1;
-static RingBuffer rb2;
-static uint8_t arr1[UART_PIPE_BUF_SIZE] = {0};
-static uint8_t arr2[UART_PIPE_BUF_SIZE] = {0};
+static RingBuffer* rb1;
+static RingBuffer* rb2;
 
 Snx5176b rs485;
 Usart* u2;
 Usart* u3;
 
-void BSP_Init(Usart* cli_usart, Usart* comm_usart, Gpio* led_gpio)
+bool BSP_Init(Usart* cli_usart, Usart* comm_usart, Gpio* led_gpio)
 {
     HAL_InitTick(0);
     SystemClock_Config();
 
+    EXIT_IF_FAIL(InitPrealloc(&memory, driver_mem, DRIVER_MEM_SIZE));
+
+    // Single FRT timer.
+    Timeout* time = make_frt_timer(&memory, 100);
+
     // LED GPIO
     RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN;
+    EXIT_IF_FAIL(
+        GiveStGpio(led_gpio, &memory,
+                   (StGpioParams){{0}, GPIOA_BASE, 5, {GPOUT, 0, 0, 0, 0}}));
 
-    StGpioInit(led_gpio, &led_stgpio);
-    StGpioConfig(led_gpio);
-
-    // Single FreeRTOS timer
-    frt_timer_init(&time, &frt, 100);
-
-    // Cli USART2
+    // CLI USART2
     RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN;
-
-    StGpioInit(&st_cli_usart.rx, &cli_uart_io1);
-    StGpioInit(&st_cli_usart.tx, &cli_uart_io2);
-
     RCC->APB1ENR1 |= RCC_APB1ENR1_USART2EN;
 
     NVIC_SetPriorityGrouping(0);
     NVIC_SetPriority(USART2_IRQn, NVIC_EncodePriority(0, 6, 0));
     NVIC_EnableIRQ(USART2_IRQn);
 
-    StUsartInit(cli_usart, &st_cli_usart, USART2_BASE, &time);
-    StUsartConfig(cli_usart, SystemCoreClock, 115200);
+    // PA2/3 AF 7
+    EXIT_IF_FAIL(GiveStUsart(
+        cli_usart, &memory, time, USART2_BASE, SystemCoreClock, 115200,
+        (StGpioParams){{0}, GPIOA_BASE, 2, {ALT_FUNC, 0, 0, 0, 0x7}},
+        (StGpioParams){{0}, GPIOA_BASE, 3, {ALT_FUNC, 0, 0, 0, 0x7}}));
 
     // Comm USART3
     RCC->AHB2ENR |= RCC_AHB2ENR_GPIOCEN;
     RCC->AHB2ENR |= RCC_AHB2ENR_GPIODEN;
-
-    StGpioInit(&st_comm_usart.rx, &comm_uart_io1);
-    StGpioInit(&st_comm_usart.tx, &comm_uart_io2);
-
     RCC->APB1ENR1 |= RCC_APB1ENR1_USART3EN;
 
     NVIC_SetPriorityGrouping(0);
     NVIC_SetPriority(USART3_IRQn, NVIC_EncodePriority(0, 6, 0));
     NVIC_EnableIRQ(USART3_IRQn);
 
-    StUsartInit(&rs485.usart, &st_comm_usart, USART3_BASE, &time);
-    StUsartConfig(&rs485.usart, SystemCoreClock, 921600);
+    EXIT_IF_FAIL(GiveStUsart(
+        rs485.usart, &memory, time, USART3_BASE, SystemCoreClock, 921600,
+        (StGpioParams){{0}, GPIOC_BASE, 10, {ALT_FUNC, 0, 0, 0, 0x7}},
+        (StGpioParams){{0}, GPIOC_BASE, 11, {ALT_FUNC, 0, 0, 0, 0x7}}));
 
-    ring_buffer_init(&rb1, arr1, UART_PIPE_BUF_SIZE);
-    ring_buffer_init(&rb2, arr2, UART_PIPE_BUF_SIZE);
+    rb1 = make_ring_buffer(&memory, UART_PIPE_BUF_SIZE);
+    rb2 = make_ring_buffer(&memory, UART_PIPE_BUF_SIZE);
 
-    StGpioInit(&rs485.txe, &txe_gpio);
-    StGpioConfig(&rs485.txe);
+    EXIT_IF_FAIL(
+        GiveStGpio(rs485.txe, &memory,
+                   (StGpioParams){{0}, GPIOC_BASE, 12, {1, 0, 0, 0, 0}}));
 
-    StGpioInit(&rs485.rxe, &rxe_gpio);
-    StGpioConfig(&rs485.rxe);
+    EXIT_IF_FAIL(
+        GiveStGpio(rs485.rxe, &memory,
+                   (StGpioParams){{0}, GPIOD_BASE, 2, {1, 0, 0, 0, 0}}));
 
     Snx5176bInit(comm_usart, &rs485);
     Snx5176bConfig(&rs485);
 
     u2 = cli_usart;
     u3 = comm_usart;
+
+    return true;
 }
 
 void USART2_IRQHandler(void)
 {
-    UartPipeCallback(u2, u3, &rb1, UART_END_CHAR);
+    UartPipeCallback(u2, u3, rb1, UART_END_CHAR);
 }
 
 void USART3_IRQHandler(void)
 {
-    UartPipeCallback(u3, u2, &rb2, UART_END_CHAR);
+    UartPipeCallback(u3, u2, rb2, UART_END_CHAR);
 }
 
 void TIM1_UP_TIM16_IRQHandler(void)

@@ -17,12 +17,6 @@ void StI2cConfig(I2c* i2c, uint32_t timingr)
     StPrivI2c* dev = (StPrivI2c*)i2c->priv;
 
     /*
-     * Setup gpio pins.
-     */
-    dev->sda.config(&dev->sda);
-    dev->scl.config(&dev->scl);
-
-    /*
      * Disable I2C, clear register.
      */
     dev->instance->CR1 &= 0x0;

@@ -2,7 +2,7 @@
     "version": 3,
     "cmakeMinimumRequired": {
         "major": 3,
-        "minor": 27,
+        "minor": 26,
         "patch": 0
     },
     "configurePresets": [
@@ -86,6 +86,17 @@
             "cacheVariables": {
                 "FREERTOS_PORT": "GCC_ARM_CM4F",
                 "MCU_FAMILY": "STM32L4"
+            }
+        },
+        {
+            "name": "stm32l412",
+            "inherits": "stm32l4",
+            "binaryDir": "${sourceDir}/build/stm32l412",
+            "cacheVariables": {
+                "LINKER_SCRIPT": "${sourceDir}/mcu_support/stm32/l4xx/l412/STM32L412KBUX_FLASH.ld",
+                "STARTUP_FILE": "${sourceDir}/mcu_support/stm32/l4xx/l412/startup_stm32l412xx.s",
+                "TARGET_DEVICE": "STM32L412",
+                "MCU_NAME": "STM32L412xx"
             }
         },
         {

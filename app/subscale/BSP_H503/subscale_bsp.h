@@ -17,6 +17,8 @@ void BSP_Init(Usart* usart, Spi* spi, I2c* i2c, Gpio* led_gpio);
 
 void USART1_IRQHandler(void);
 
+void SystemReset(void);
+
 /**
   * @brief System Clock Configuration
   * @retval None

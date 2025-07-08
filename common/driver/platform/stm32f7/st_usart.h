@@ -4,7 +4,6 @@
 
 #include "stm32f7xx.h"
 
-#include "gpio.h"
 #include "timeout.h"
 #include "usart.h"
 
@@ -15,8 +14,6 @@
 typedef struct
 {
     USART_TypeDef* instance;
-    Gpio rx;
-    Gpio tx;
     Timeout* timer;
 } StPrivUsart;
 

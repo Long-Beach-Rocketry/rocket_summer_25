@@ -17,10 +17,6 @@ void StSpiConfig(Spi* spi)
 {
     StPrivSpi* dev = (StPrivSpi*)spi->priv;
 
-    dev->mosi.config(&dev->mosi);
-    dev->miso.config(&dev->miso);
-    dev->scl.config(&dev->scl);
-
     // Disable SPI and turn off: Bidirectional mode, CRC, RX only
     // set CPOL/CPHA = 0, 8-bit
     dev->instance->CR1 &= 0;

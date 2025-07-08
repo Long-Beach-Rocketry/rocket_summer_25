@@ -15,8 +15,6 @@
 typedef struct
 {
     USART_TypeDef* instance;
-    Gpio rx;
-    Gpio tx;
     Timeout* timer;
 } StPrivUsart;
 

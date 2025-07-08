@@ -1,5 +1,6 @@
 
 #include "w25q_logger.h"
+#include <string.h>
 
 void W25qLoggerInit(LogSubscriber* sub, W25qLogger* flash_log, W25q* flash,
                     size_t max_index)
@@ -92,15 +93,17 @@ bool W25qLoggerRetrieve(LogSubscriber* sub, Send* sender)
             }
             continue;
         }
-        for (size_t byte = 0; byte < W25Q_MAX_PAGE_SIZE; ++byte)
+        size_t byte = 0;
+        while (byte++ < W25Q_MAX_PAGE_SIZE)
         {
             if (buf[byte] == f_log->end_char)
             {
-                buf[byte] = '\0';
                 break;
             }
         }
-        sender->fwrite(sender, "%s", buf);
+        buf[byte] = '\0';
+
+        sender->fwrite(sender, "%s", (const char*)buf);
     }
 
     eof = false;

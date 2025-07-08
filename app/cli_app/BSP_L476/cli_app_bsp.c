@@ -1,68 +1,52 @@
 
 #include "cli_app_bsp.h"
 
-static StPrivUsart st_usart;
-static StPrivI2c st_i2c1;
-static StGpioParams led_stgpio = {{0}, GPIOA_BASE, 5, {GPOUT, 0, 0, 0, 0}};
+#define EXIT_IF_FAIL(cond) EXIT_IF(!(cond), false)
 
-// Sequential use of these, so using one is fine. Not thread safe.
-static Timeout time;
-static FrtTimerData frt;
+static Mem memory;
+static uint8_t driver_mem[DRIVER_MEM_SIZE] = {0};
 
-static StGpioParams uart_io1 = {{0},
-                                GPIOA_BASE,
-                                2,
-                                {ALT_FUNC, 0, 0, 0, 0x7}};  // USART2 AF 7
-static StGpioParams uart_io2 = {{0},
-                                GPIOA_BASE,
-                                3,
-                                {ALT_FUNC, 0, 0, 0, 0x7}};  // USART2 AF 7
-
-const StGpioSettings i2c_io_conf = {ALT_FUNC, OPEN_DRAIN, 0, PULL_UP, 0x4};
-
-static StGpioParams i2c1_io1 = {{0}, GPIOB_BASE, 8, i2c_io_conf};
-static StGpioParams i2c1_io2 = {{0}, GPIOB_BASE, 9, i2c_io_conf};
-
-void BSP_Init(Usart* usart, I2c* temp_i2c, Gpio* led_gpio)
+bool BSP_Init(Usart* usart, I2c* temp_i2c, Gpio* led_gpio)
 {
-
     HAL_InitTick(0);
     SystemClock_Config();
+
+    EXIT_IF_FAIL(InitPrealloc(&memory, driver_mem, DRIVER_MEM_SIZE));
+
+    // Single FRT timer.
+    Timeout* time = make_frt_timer(&memory, 100);
 
     // LED GPIO
     RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN;
 
-    StGpioInit(led_gpio, &led_stgpio);
-    StGpioConfig(led_gpio);
-
-    // Single FreeRTOS timer
-    frt_timer_init(&time, &frt, 100);
+    EXIT_IF_FAIL(
+        GiveStGpio(led_gpio, &memory,
+                   (StGpioParams){{0}, GPIOA_BASE, 5, {GPOUT, 0, 0, 0, 0}}));
 
     // USART2
-    // RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN;
-
-    StGpioInit(&st_usart.rx, &uart_io1);
-    StGpioInit(&st_usart.tx, &uart_io2);
-
     RCC->APB1ENR1 |= RCC_APB1ENR1_USART2EN;
 
     NVIC_SetPriorityGrouping(0);
     NVIC_SetPriority(USART2_IRQn, NVIC_EncodePriority(0, 6, 0));
     NVIC_EnableIRQ(USART2_IRQn);
 
-    StUsartInit(usart, &st_usart, USART2_BASE, &time);
-    StUsartConfig(usart, SystemCoreClock, 115200);
+    // PA2/3 AF 7
+    EXIT_IF_FAIL(GiveStUsart(
+        usart, &memory, time, USART2_BASE, SystemCoreClock, 115200,
+        (StGpioParams){{0}, GPIOA_BASE, 2, {ALT_FUNC, 0, 0, 0, 0x7}},
+        (StGpioParams){{0}, GPIOA_BASE, 3, {ALT_FUNC, 0, 0, 0, 0x7}}));
 
-    // I2c1 PB8, PB9
+    // I2c1
     RCC->AHB2ENR |= RCC_AHB2ENR_GPIOBEN;
-
-    StGpioInit(&st_i2c1.scl, &i2c1_io1);
-    StGpioInit(&st_i2c1.sda, &i2c1_io2);
-
     RCC->APB1ENR1 |= RCC_APB1ENR1_I2C1EN;
 
-    StI2cInit(temp_i2c, &st_i2c1, I2C1_BASE, &time);
-    StI2cConfig(temp_i2c, 0x10909CEC);
+    // PB8/9 AF 4
+    const StGpioSettings i2c_conf = {ALT_FUNC, OPEN_DRAIN, 0, PULL_UP, 0x4};
+    EXIT_IF_FAIL(GiveStI2c(temp_i2c, &memory, time, I2C1_BASE, 0x10909CEC,
+                           (StGpioParams){{0}, GPIOB_BASE, 8, i2c_conf},
+                           (StGpioParams){{0}, GPIOB_BASE, 9, i2c_conf}));
+
+    return true;
 }
 
 void USART2_IRQHandler(void)

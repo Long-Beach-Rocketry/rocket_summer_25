@@ -10,9 +10,6 @@
 typedef struct
 {
     SPI_TypeDef* instance;
-    Gpio mosi;
-    Gpio miso;
-    Gpio scl;
     Timeout* timer;
 } StPrivSpi;
 

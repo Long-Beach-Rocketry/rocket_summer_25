@@ -31,12 +31,6 @@ void StUsartConfig(Usart* usart, uint32_t system_core_clk, uint32_t baudrate)
 {
     StPrivUsart* dev = (StPrivUsart*)usart->priv;
 
-    /*
-     * Setup gpio.
-     */
-    dev->rx.config(&dev->rx);
-    dev->tx.config(&dev->tx);
-
     uint16_t uartdiv = system_core_clk / baudrate;
     dev->instance->BRR = (((uartdiv / 16) << USART_BRR_DIV_MANTISSA_Pos) |
                           ((uartdiv % 16) << USART_BRR_DIV_FRACTION_Pos));

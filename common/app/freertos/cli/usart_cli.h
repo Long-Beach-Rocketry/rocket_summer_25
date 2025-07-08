@@ -17,7 +17,7 @@
 
 #define CLI_VER "usart-cli-v0.1"
 #define PASSWORD "LBR"
-#define MAX_SEND_LEN 60
+#define MAX_SEND_LEN 300
 #define CLI_TERMINATION_CHAR '\n'
 
 /**

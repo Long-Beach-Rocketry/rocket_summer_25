@@ -21,9 +21,18 @@ static StGpioParams uart_io2 = {{0},
                                 7,
                                 {ALT_FUNC, 0, 0, 0, 0x7}};  // USART1 AF 7
 
-static StGpioParams spi_io1 = {{0}, GPIOC_BASE, 0, {ALT_FUNC, 0, 0, 0, 0x5}};
-static StGpioParams spi_io2 = {{0}, GPIOC_BASE, 2, {ALT_FUNC, 0, 0, 0, 0x4}};
-static StGpioParams spi_io3 = {{0}, GPIOC_BASE, 3, {ALT_FUNC, 0, 0, 0, 0x4}};
+static StGpioParams spi_io1 = {{0},
+                               GPIOC_BASE,
+                               0,
+                               {ALT_FUNC, 0, VERY_HIGH, 0, 0x5}};
+static StGpioParams spi_io2 = {{0},
+                               GPIOC_BASE,
+                               2,
+                               {ALT_FUNC, 0, VERY_HIGH, 0, 0x4}};
+static StGpioParams spi_io3 = {{0},
+                               GPIOC_BASE,
+                               3,
+                               {ALT_FUNC, 0, VERY_HIGH, 0, 0x4}};
 
 const StGpioSettings i2c_io_conf = {ALT_FUNC, OPEN_DRAIN, 0, PULL_UP, 0x4};
 
@@ -74,10 +83,10 @@ void BSP_Init(Usart* usart, Spi* spi, I2c* temp_i2c, Gpio* led_gpio)
     StGpioInit(&st_spi.scl, &spi_io1);
     StGpioInit(&st_spi.miso, &spi_io2);
     StGpioInit(&st_spi.mosi, &spi_io3);
-    StGpioInit(&st_spi_cs.pin, &spi_cs_io);
+    StGpioInit(st_spi_cs.pin, &spi_cs_io);
 
-    GpioCsInit(&spi->cs, &st_spi_cs, true);
-    GpioCsConfig(&spi->cs);
+    GpioCsInit(spi->cs, &st_spi_cs, st_spi_cs.pin, true);
+    GpioCsConfig(spi->cs);
     StSpiInit(spi, &st_spi, SPI1_BASE, 100);
     StSpiConfig(spi);
 
@@ -98,6 +107,11 @@ void USART1_IRQHandler(void)
     cli_usart_rx_callback();
 }
 
+void SystemReset(void)
+{
+    HAL_NVIC_SystemReset();
+}
+
 void SystemClock_Config(void)
 {
     RCC_OscInitTypeDef RCC_OscInitStruct = {0};
@@ -114,21 +128,18 @@ void SystemClock_Config(void)
     /** Initializes the RCC Oscillators according to the specified parameters
      * in the RCC_OscInitTypeDef structure.
      */
-    RCC_OscInitStruct.OscillatorType =
-        RCC_OSCILLATORTYPE_HSI | RCC_OSCILLATORTYPE_CSI;
+    RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
     RCC_OscInitStruct.HSIState = RCC_HSI_ON;
-    RCC_OscInitStruct.HSIDiv = RCC_HSI_DIV2;
+    RCC_OscInitStruct.HSIDiv = RCC_HSI_DIV1;
     RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
-    RCC_OscInitStruct.CSIState = RCC_CSI_ON;
-    RCC_OscInitStruct.CSICalibrationValue = RCC_CSICALIBRATION_DEFAULT;
     RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-    RCC_OscInitStruct.PLL.PLLSource = RCC_PLL1_SOURCE_CSI;
-    RCC_OscInitStruct.PLL.PLLM = 1;
-    RCC_OscInitStruct.PLL.PLLN = 32;
+    RCC_OscInitStruct.PLL.PLLSource = RCC_PLL1_SOURCE_HSI;
+    RCC_OscInitStruct.PLL.PLLM = 4;
+    RCC_OscInitStruct.PLL.PLLN = 8;
     RCC_OscInitStruct.PLL.PLLP = 2;
     RCC_OscInitStruct.PLL.PLLQ = 2;
     RCC_OscInitStruct.PLL.PLLR = 2;
-    RCC_OscInitStruct.PLL.PLLRGE = RCC_PLL1_VCIRANGE_2;
+    RCC_OscInitStruct.PLL.PLLRGE = RCC_PLL1_VCIRANGE_3;
     RCC_OscInitStruct.PLL.PLLVCOSEL = RCC_PLL1_VCORANGE_WIDE;
     RCC_OscInitStruct.PLL.PLLFRACN = 0;
     if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
@@ -141,13 +152,13 @@ void SystemClock_Config(void)
     RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK |
                                   RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2 |
                                   RCC_CLOCKTYPE_PCLK3;
-    RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_HSI;
+    RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
     RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
     RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
     RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
     RCC_ClkInitStruct.APB3CLKDivider = RCC_HCLK_DIV1;
 
-    if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_1) != HAL_OK)
+    if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_3) != HAL_OK)
     {
         Error_Handler();
     }

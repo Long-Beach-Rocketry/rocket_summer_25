@@ -38,7 +38,7 @@
             "request": "launch",
             "type": "cortex-debug",
             "servertype": "openocd",
-            "device": "STM32L476",
+            "device": "STM32L4",
             "svdFile": "${workspaceRoot}/mcu_support/l4xx/STM32L4x2.svd",
             "searchDir": [
                 "${workspaceRoot}/mcu_support/stm32"
@@ -92,11 +92,11 @@
         {
             "cwd": "${workspaceFolder}",
             "executable": "${workspaceRoot}/build/stm32h503/app/subscale/subscale",
-            "name": "DEBUG CLI H503",
+            "name": "DEBUG CLI H5",
             "request": "launch",
             "type": "cortex-debug",
             "servertype": "openocd",
-            "device": "STM32H503",
+            "device": "STM32H5",
             // "svdFile": "${workspaceRoot}/mcu_support/h5xx/h563/STM32H563.svd",
             "searchDir": [
                 "${workspaceRoot}/mcu_support/stm32"

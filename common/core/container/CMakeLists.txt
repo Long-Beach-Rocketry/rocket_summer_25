@@ -4,6 +4,7 @@ add_library(container STATIC
 )
 
 target_include_directories(container PUBLIC .)
+target_link_libraries(container PUBLIC memory)
 
 add_tests(container
     ring_buffer_test

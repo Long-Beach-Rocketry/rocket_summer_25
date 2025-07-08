@@ -10,7 +10,7 @@
 #include <stddef.h>
 #include <stdio.h>
 
-#define MAX_SEND_LENGTH 64
+#define MAX_SEND_LENGTH 256
 
 typedef struct Send Send;
 

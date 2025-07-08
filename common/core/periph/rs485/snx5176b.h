@@ -6,6 +6,8 @@
 
 #pragma once
 
+#include "alloc.h"
+#include "exit.h"
 #include "gpio.h"
 #include "ring_buffer.h"
 #include "usart.h"
@@ -18,19 +20,44 @@ typedef struct
     /**
      * A UART interface to send data over.
      */
-    Usart usart;
+    Usart* usart;
 
     /**
      * A GPIO for enabling TX mode on the transceiver.
      */
-    Gpio txe;
+    Gpio* txe;
 
     /**
      * A GPIO for enabling RX mode on the transceiver.
      */
-    Gpio rxe;
+    Gpio* rxe;
 
 } Snx5176b;
+
+/**
+ * Initializes a new Snx5176b RS485 transceiver.
+ * 
+ * @param iface the UART interface to initialize.
+ * @param mem the memory to allocate from.
+ * @param uart the underlying UART to drive the RS485 bus with.
+ * @param txe transmit enable control GPIO.
+ * @param rxe receive enable control GPIO.
+ * 
+ * @return True on success, false otherwise.
+ */
+bool GiveSnx5176b(Usart* iface, Mem* mem, Usart* uart, Gpio* txe, Gpio* rxe);
+
+/**
+ * Allocates a new Snx5176b RS485 transceiver instance.
+ * 
+ * @param mem the memory to allocate from.
+ * @param uart the underlying UART to drive the RS485 bus with.
+ * @param txe transmit enable control GPIO.
+ * @param rxe receive enable control GPIO.
+ * 
+ * @return a pointer to the newly allocated driver.
+ */
+Usart* MakeSnx5176b(Mem* mem, Usart* uart, Gpio* txe, Gpio* rxe);
 
 /**
  * Initializes a UART interface with a SNx5176B instance.
