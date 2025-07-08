@@ -63,7 +63,7 @@ struct Bus
     uint8_t address;
     char receive_buffer[MAX_RECEIVE_BUF_SIZE];
     bool (*pack)(Bus* self, uint8_t* buffer, uint16_t buffer_size,
-                 uint8_t target, const uint8_t* data, uint8_t data_size);
+                 uint8_t target, uint8_t* data, uint8_t data_size);
     void (*read_byte)(Bus* self, uint8_t data);
     uint8_t (*get_package_size)(Bus* self);
     void (*flush_data)(Bus* self, uint8_t* buffer);

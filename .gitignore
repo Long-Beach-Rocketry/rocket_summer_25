@@ -7,3 +7,5 @@ CMakeCache.txt
 *settings.json
 .vscode
 **/venv
+.cache
+compile_commands.json
