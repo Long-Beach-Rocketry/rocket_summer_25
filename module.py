@@ -33,21 +33,20 @@ class Window(QMainWindow): #creating window for the Qtable to display (inheritan
             self.columns.setItem()'''
         self.button = QPushButton(self) #creating a push button
         self.button.setGeometry(160,100,50,50) #setting the size and location of the button
-        #self.button.clicked.connect(self.apply)
-        self.columns.itemChanged.connect(self.changed)
+        self.columns.itemChanged.connect(self.changed) #if the item in the textbox is changed, refer to changed()
     def changed(self):
-        for i in range(len(insert)):
-            name = self.columns.item(i,0)
-            named = name.text()
-            new_list.append(named)
+        for i in range(len(insert)): #for loop to iterate through the rows
+            name = self.columns.item(i,0) #grabbing the item in the specific row
+            named = name.text() #retrieving the text from the specific row
+            new_list.append(named) #adding the text to a new list called new_list
         #self.columns.setItem(self.columns.currentRow(), self.columns.currentColumn(), self.columns.item(self.columns.currentRow(), self.columns.currentColumn()) )
-        self.button.clicked.connect(self.buttoned)
+        self.button.clicked.connect(self.buttoned) #if the button is clicked, refer to buttoned()
     def buttoned(self):
-        for i in range(len(insert)):
-            itm = QTableWidgetItem(new_list[i])
-            oldItem = QTableWidgetItem(new_list[i])
-            self.new.setItem(i, 0, itm)
-            self.columns.setItem(i, 0, oldItem)
+        for i in range(len(insert)): #iterating through all the rows
+            itm = QTableWidgetItem(new_list[i]) #creating a new item with each text of the previous table 
+            oldItem = QTableWidgetItem(new_list[i]) #creating another new item with each text of previous table to update old table
+            self.new.setItem(i, 0, itm) #setting the new text to it's corresponding location
+            self.columns.setItem(i, 0, oldItem) #setting the new text to the corresponding location of the old one
         print(new_list)
 class Protodisplay: #creating a class called protodisplay   
     def __init__(self, newlist): #initializing variables (list)
