@@ -56,6 +56,7 @@ void read_byte(Bus* self, uint8_t data)
                     self->sum += data;
 
                     self->receive_index += 1;
+                    break;
                 }
             case READ_ADDRESS:
                 if (data == self->address)
@@ -71,7 +72,7 @@ void read_byte(Bus* self, uint8_t data)
                         "currently in read address, this is my address %d, "
                         "this is data %d\n",
                         self->address, data);
-                    self->state = 100;  // change
+                    self->state = IDLE;  // change
                 }
                 break;
             case READ_LEN:
@@ -89,7 +90,6 @@ void read_byte(Bus* self, uint8_t data)
                 self->receive_buffer[self->receive_index] = data;
                 self->sum += data;
                 self->receive_index += 1;
-
                 break;
             case VALIDATE:
                 self->sum = self->sum % 256;
@@ -105,7 +105,6 @@ void read_byte(Bus* self, uint8_t data)
                     self->receive_buffer[self->receive_index] = data;
                     self->receive_index += 1;
                 }
-
                 break;
             default:
                 break;

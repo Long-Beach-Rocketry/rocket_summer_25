@@ -59,16 +59,10 @@ TEST_F(ReadCharTests, idle_to_right_address_test)
 {
     const uint8_t data[] = {START_TRANSMISSION, ADDRESS}; /*right address*/
     lbr_net_node_init(&bus, ADDRESS);
-    bus.address = IDLE;
-    printf("MY STATE IS %d\n", bus.state);
     EXPECT_EQ(bus.state, IDLE);
-    printf("BUS IS IN IDLE NOW SENDING START TRANS\n");
     bus.read_byte(&bus, data[0]);
     EXPECT_EQ(bus.state, READ_ADDRESS);
-    printf("DONE SENDING AND CHECKIGN THE ADDRESS\n");
-    printf("CHECK\n");
-	bus.read_byte(&bus, data[1]);
-    printf("CHECKING IF THE ADDRESS IS THE SAME\n");
+    bus.read_byte(&bus, data[1]);
     EXPECT_EQ(bus.state, READ_LEN);
 }
 
