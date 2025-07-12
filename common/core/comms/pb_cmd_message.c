@@ -1,11 +1,15 @@
+/**
+ * @file pb_cmd_message.c
+ * @brief cmd_message implementation for nanopb.
+ * @author TJ Malaska
+ */
 #include "pb_cmd.h"
 
-bool get_buf_pb(cmd_message* self, uint8_t* buffer,
-                size_t size)  // i dont think i need size
+bool get_buf_pb(cmd_message* self, uint8_t* buffer, size_t size)
 {
-    pb_cmd* cmd = self->priv;
     bool status;
-    pb_ostream_t stream = pb_ostream_from_buffer(buffer, sizeof(buffer));
+    pb_cmd* cmd = self->priv;
+    pb_ostream_t stream = pb_ostream_from_buffer(buffer, size);
     status = pb_encode(&stream, cmd->schema_field, cmd->schema_object);
     cmd->buffer_size = stream.bytes_written;
     return status;
