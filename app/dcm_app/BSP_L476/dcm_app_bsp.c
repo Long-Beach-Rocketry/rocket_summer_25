@@ -47,7 +47,7 @@ bool BSP_Init(QEnc* enc, Gpio* channel_a, Gpio* channel_b, DCMotor* motor,
     RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN | RCC_AHB2ENR_GPIOCEN;
     RCC->APB1ENR1 |= RCC_APB1ENR1_TIM3EN | RCC_APB1ENR1_TIM2EN;
 
-    StEncInit(enc, &st_enc, channel_a, channel_b, TIM3_BASE);
+    StEncInit(enc, &st_enc, channel_a, channel_b, TIM3_BASE, ONE, TWO);
 
     RCC->APB1ENR1 |= RCC_APB1ENR1_USART2EN;
 
@@ -80,12 +80,12 @@ bool BSP_Init(QEnc* enc, Gpio* channel_a, Gpio* channel_b, DCMotor* motor,
     StGpioInit(channel_b, &channel_b_param);
     StGpioConfig(channel_b);
 
-    StPwmInit(pwm, &st_pwm, TIM2_BASE, 84000000);
+    StPwmInit(pwm, &st_pwm, TIM2_BASE, 80000000, 1);
 
-    StPwmSetFreq(pwm, 25);
+    StPwmSetFreq(pwm, 15000);
 
-    StDcmInit(motor, &st_motor, brake, direction, pwm);
-    DCM_Control_Init(control, motor, 400, enc);
+    NidecDcmInit(motor, &st_motor, brake, direction, pwm);
+    DCM_PID_Control_Init(control, motor, enc);
 
     return true;
 }

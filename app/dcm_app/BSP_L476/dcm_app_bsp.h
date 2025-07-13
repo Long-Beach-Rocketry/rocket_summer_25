@@ -1,9 +1,9 @@
 #pragma once
 
-#include "dcm_control.h"
+#include "dcm_pid_control.h"
 #include "freertos_timer.h"
+#include "nidec_dcm.h"
 #include "prealloc.h"
-#include "st_dcm.h"
 #include "st_enc.h"
 #include "st_gpio.h"
 #include "st_gpio_fctry.h"

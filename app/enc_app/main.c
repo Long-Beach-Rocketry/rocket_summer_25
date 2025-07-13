@@ -8,7 +8,7 @@
 #include "dcm_app_bsp.h"
 
 #include "gpio.h"
-#include "st_dcm.h"
+#include "nidec_dcm.h"
 #include "st_pwm.h"
 
 /*-----------------------------------------------------------*/
@@ -21,11 +21,11 @@ Gpio brake, direction, gpio_pwm;
 void dcm_test(void)
 {
     if (control.diff <= control.target_count)
-        DcmControlUpdate(&control);
+        DcmPidControlUpdate(&control);
     else
     {
         // DCM_Control_Init(&control, &motor, 100);
-        DcmControlCommand(&control, true, 300);
+        DcmPidControlCommand(&control, true, 300);
         control.dir = 0;
     }
 
@@ -37,13 +37,13 @@ int main(void)
 
     BSP_Init(&motor, &control, &pwm, &brake, &direction, &gpio_pwm);
 
-    DcmControlCommand(&control, true, 300);
+    DcmPidControlCommand(&control, true, 300);
 
     create_main_loop(dcm_test, 10);
 
-    // StDcmSetDir(&motor, 0);
+    // NidecDcmSetDir(&motor, 0);
 
-    // DcmControlCommand(&control, true, 100);
+    // DcmPidControlCommand(&control, true, 100);
 
     // create_main_loop(dcm_test, 10);
 

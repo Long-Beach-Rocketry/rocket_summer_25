@@ -20,6 +20,7 @@ typedef struct
 
     size_t period;
     size_t clock;
+    size_t channel;
 
 } StPrivPwm;
 
@@ -30,10 +31,11 @@ typedef struct
   * @param st_pwm A pointer to a private data variable giving access to other private members.
   * @param base_address A int that represents the address of the PWM device.
   * @param mc_clock This represents the Micro-controller's native PWM clock frequency.
+  * @param channel Selects channel to be used. Takes integeter values. Possible Inputs: 1, 2, 3, 4.
   * 
   */
 void StPwmInit(Pwm* pwm, StPrivPwm* st_pwm, size_t base_address,
-               size_t mc_clock);
+               size_t mc_clock, size_t channel);
 
 /**
   * @brief Initializes settings for a PWM object.

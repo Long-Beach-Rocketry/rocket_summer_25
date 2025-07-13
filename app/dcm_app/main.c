@@ -8,7 +8,7 @@
 #include "dcm_app_bsp.h"
 
 #include "gpio.h"
-#include "st_dcm.h"
+#include "nidec_dcm.h"
 #include "st_pwm.h"
 
 /*-----------------------------------------------------------*/
@@ -24,15 +24,15 @@ void dcm_test(void)
 {
     // static const uint8_t data[] = "hi";
     // if (control.diff <= control.target_count)
-    //     DcmControlUpdate(&control);
+    //     DcmPidControlUpdate(&control);
     // else
     // {
     //     // DCM_Control_Init(&control, &motor, 100);
-    //     DcmControlCommand(&control, true, 300);
+    //     DcmPidControlCommand(&control, true, 300);
     //     control.dir = 0;
     // }
 
-    DcmControlUpdate(&control);
+    DcmPidControlUpdate(&control);
     // usart.send(&usart, &data[0], 0);
 
     // HAL_Delay(100);
@@ -46,13 +46,13 @@ int main(void)
 
     control.dir = 1;
 
-    DcmControlCommand(&control, true, 30080);
+    DcmPidControlCommand(&control, true, 114000);
 
-    create_main_loop(dcm_test, 10);
+    create_main_loop(dcm_test, 1000);
 
-    // StDcmSetDir(&motor, 0);
+    // NidecDcmSetDir(&motor, 0);
 
-    // DcmControlCommand(&control, true, 100);
+    // DcmPidControlCommand(&control, true, 100);
 
     // create_main_loop(dcm_test, 10);
 

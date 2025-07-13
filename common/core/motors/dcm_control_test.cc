@@ -24,7 +24,7 @@ TEST_F(DcmControlTest, InitTest)
 {
     FakeInit(&motor, &motor_ctrl);
     QEnc_Init(&qenc, &qenc_ctrl, &st_qenc, &motor, base_addr);
-    DCM_Control_Init(&dev, &motor_ctrl, &qenc_ctrl);
+    DCM_PID_Control_Init(&dev, &motor_ctrl, &qenc_ctrl);
     FakeSetEnable(&motor, true);
     config(&dev);
 
@@ -45,7 +45,7 @@ TEST_F(DcmControlTest, OverflowTest)
 {
     FakeInit(&motor, &motor_ctrl);
     QEnc_Init(&qenc, &qenc_ctrl, &motor);
-    DCM_Control_Init(&dev, &motor_ctrl, &qenc_ctrl);
+    DCM_PID_Control_Init(&dev, &motor_ctrl, &qenc_ctrl);
     FakeSetEnable(&motor, true);
     config(&dev);
 

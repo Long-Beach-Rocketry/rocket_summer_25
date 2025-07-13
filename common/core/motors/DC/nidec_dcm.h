@@ -19,6 +19,7 @@ typedef struct
     Pwm* pwm;
     Gpio* brake;
     Gpio* direction;
+    size_t pulses_per_rev;
     bool enable;
 
 } DCPosControl;
@@ -34,8 +35,8 @@ typedef struct
  * @param pwm a point to an insatnce of a Pwm object
  * 
  */
-void StDcmInit(DCMotor* motor, DCPosControl* control, Gpio* Brake,
-               Gpio* direction, Pwm* pwm);
+void NidecDcmInit(DCMotor* motor, DCPosControl* control, Gpio* Brake,
+                  Gpio* direction, Pwm* pwm);
 /**
  * 
  * @brief this function enables the motor
@@ -46,7 +47,7 @@ void StDcmInit(DCMotor* motor, DCPosControl* control, Gpio* Brake,
  * @return true is motor was enabled, false if disabled
  * 
  */
-bool StDcmSetEnable(DCMotor* motor, bool enable);
+bool NidecDcmSetEnable(DCMotor* motor, bool enable);
 /**
  * 
  * @brief this function set the direction the motor will travel
@@ -56,14 +57,14 @@ bool StDcmSetEnable(DCMotor* motor, bool enable);
  * 
  * @return true if a direction was commanded, false otherise
  */
-bool StDcmSetDir(DCMotor* motor, bool direction);
+bool NidecDcmSetDir(DCMotor* motor, bool direction);
 
 /**
  * 
- * @brief this function sets the duty cycle for the motor
+ * @brief this function sets the duty cycle for the motor, this function accounts for the inverted duty cycle
  * 
  * @param motor pointer to current motor instance
  * @param duty desired duty cycle as a percentage
  * 
  */
-void StDcmSetDuty(DCMotor* motor, float duty);
+void NidecDcmSetDuty(DCMotor* motor, float duty);

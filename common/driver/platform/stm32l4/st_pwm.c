@@ -3,7 +3,7 @@
 #include "stm32l476xx.h"
 
 void StPwmInit(Pwm* pwm, StPrivPwm* st_pwm, size_t base_address,
-               size_t mc_clock)
+               size_t mc_clock, size_t channel)
 {
     st_pwm->instance = (TIM_TypeDef*)base_address;
 
@@ -12,6 +12,7 @@ void StPwmInit(Pwm* pwm, StPrivPwm* st_pwm, size_t base_address,
     pwm->enable = StPwmEnable;
     pwm->setDuty = StPwmDuty;
     pwm->setFreq = StPwmSetFreq;
+    st_pwm->channel = channel;
 
     StPwmEnable(pwm, false);
     StPwmSetFreq(pwm, 1000);
@@ -25,15 +26,58 @@ bool StPwmEnable(Pwm* pwm, bool enable)
     if (enable == true)
     {
 
-        //CCMR1 is configuring channel PWM TIMx Channel 1
-        dev->instance->CCMR1 &= ~TIM_CCMR1_CC1S;
-        dev->instance->CCMR1 |= TIM_CCMR1_OC1M_2;
-        dev->instance->CCMR1 |= TIM_CCMR1_OC1M_1;
-        dev->instance->CCMR1 |= TIM_CCMR1_OC1PE;
-        //enabling channel 1, setting polarity active high
-        dev->instance->CCER &= ~TIM_CCER_CC1P;
-        dev->instance->CCER &= ~TIM_CCER_CC1NP;
-        dev->instance->CCER |= TIM_CCER_CC1E;
+        switch (dev->channel)
+        {
+            case 1:
+                //CCMR1 is configuring channel PWM TIMx Channel 1
+                dev->instance->CCMR1 &= ~TIM_CCMR1_CC1S;
+                dev->instance->CCMR1 |= TIM_CCMR1_OC1M_2;
+                dev->instance->CCMR1 |= TIM_CCMR1_OC1M_1;
+                dev->instance->CCMR1 |= TIM_CCMR1_OC1PE;
+                //enabling channel 1, setting polarity active high
+                dev->instance->CCER &= ~TIM_CCER_CC1P;
+                dev->instance->CCER &= ~TIM_CCER_CC1NP;
+                dev->instance->CCER |= TIM_CCER_CC1E;
+
+                break;
+
+            case 2:
+                //CCMR1 is configuring channel PWM TIMx Channel 2
+                dev->instance->CCMR1 &= ~TIM_CCMR1_CC2S;
+                dev->instance->CCMR1 |= TIM_CCMR1_OC2M_2;
+                dev->instance->CCMR1 |= TIM_CCMR1_OC2M_1;
+                dev->instance->CCMR1 |= TIM_CCMR1_OC2PE;
+                //enabling channel 2, setting polarity active high
+                dev->instance->CCER &= ~TIM_CCER_CC2P;
+                dev->instance->CCER &= ~TIM_CCER_CC2NP;
+                dev->instance->CCER |= TIM_CCER_CC2E;
+
+                break;
+            case 3:
+                //CCMR1 is configuring channel PWM TIMx Channel 2
+                dev->instance->CCMR2 &= ~TIM_CCMR2_CC3S;
+                dev->instance->CCMR2 |= TIM_CCMR2_OC3M_2;
+                dev->instance->CCMR1 |= TIM_CCMR2_OC3M_1;
+                dev->instance->CCMR1 |= TIM_CCMR2_OC3PE;
+                //enabling channel 2, setting polarity active high
+                dev->instance->CCER &= ~TIM_CCER_CC3P;
+                dev->instance->CCER &= ~TIM_CCER_CC3NP;
+                dev->instance->CCER |= TIM_CCER_CC3E;
+
+                break;
+            case 4:
+                //CCMR1 is configuring channel PWM TIMx Channel 2
+                dev->instance->CCMR2 &= ~TIM_CCMR2_CC4S;
+                dev->instance->CCMR2 |= TIM_CCMR2_OC4M_2;
+                dev->instance->CCMR1 |= TIM_CCMR2_OC4M_1;
+                dev->instance->CCMR1 |= TIM_CCMR2_OC4PE;
+                //enabling channel 2, setting polarity active high
+                dev->instance->CCER &= ~TIM_CCER_CC4P;
+                dev->instance->CCER &= ~TIM_CCER_CC4NP;
+                dev->instance->CCER |= TIM_CCER_CC4E;
+
+                break;
+        }
         //configuring TIMX
         dev->instance->CR1 |= TIM_CR1_ARPE;
         dev->instance->CR1 &= ~TIM_CR1_CMS_Msk;
@@ -61,10 +105,11 @@ void StPwmSetFreq(Pwm* pwm, size_t hz)
     StPrivPwm* dev = (StPrivPwm*)pwm->priv;
 
     dev->period = 1000 / hz;
-    size_t DesiredPSC = ((dev->clock) / UINT32_MAX) / hz;
+    // size_t DesiredPSC = ((dev->clock) / 65535) / hz;
 
-    dev->instance->PSC = DesiredPSC - 1;
-    dev->instance->ARR = UINT32_MAX - 1;
+    dev->instance->PSC = 80 - 1;
+    size_t DesiredARR = ((dev->clock) / 80) / hz;
+    dev->instance->ARR = DesiredARR - 1;
 }
 
 void StPwmDuty(Pwm* pwm, double duty)
@@ -73,5 +118,23 @@ void StPwmDuty(Pwm* pwm, double duty)
 
     double Duty = (size_t)((duty / 100) * (dev->instance->ARR));
 
-    dev->instance->CCR1 = Duty;
+    switch (dev->channel)
+    {
+        case 1:
+            dev->instance->CCR1 = Duty;
+
+            break;
+        case 2:
+            dev->instance->CCR2 = Duty;
+
+            break;
+        case 3:
+            dev->instance->CCR3 = Duty;
+
+            break;
+        case 4:
+            dev->instance->CCR4 = Duty;
+
+            break;
+    }
 }

@@ -1,14 +1,12 @@
-#include "dcm_control.h"
+#include "dcm_pid_control.h"
 #include <math.h>
 #include "FreeRTOS.h"
 #include "stm32l4xx_hal.h"
 
-void DCM_Control_Init(DCM_Control* control, DCMotor* motor,
-                      size_t pulse_per_rev, QEnc* enc)
+void DCM_PID_Control_Init(DCM_Control* control, DCMotor* motor, QEnc* enc)
 {
 
     control->motor = motor;
-    control->pusle_per_rev = pulse_per_rev;
 
     control->state = IDLE;
     control->target_count = 0;
@@ -24,23 +22,23 @@ void DCM_Control_Init(DCM_Control* control, DCMotor* motor,
     control->cmd = false;
     control->delta_time = 0;
     control->pid_signal = 0;
-    control->target_velocity = 20;
+    control->target_velocity = 9;
     control->velcoity_error = 0;
-    control->constant = 5;
-    control->integral_constant = 1;
+    control->constant = 10;
+    control->integral_constant = 5;
     control->integral_error = 0;
 
     control->enc = enc;
 }
 
-void DcmControlCommand(DCM_Control* control, bool command, float degrees)
+void DcmPidControlCommand(DCM_Control* control, bool command, float degrees)
 {
     control->cmd = command;
     control->cmd_degrees = degrees;
 
-    StDcmSetEnable(control->motor, command);
+    control->motor->set_en(control->motor, command);
     control->motor->set_direction(control->motor, control->dir);
-    control->motor->set_duty(control->motor, 0);
+    control->motor->set_duty(control->motor, 35);  //inverted duty cycle
     if (command)
     {
         control->state = IDLE;
@@ -54,11 +52,12 @@ void DcmControlCommand(DCM_Control* control, bool command, float degrees)
     }
 }
 
-bool DcmControlUpdate(DCM_Control* control)
+bool DcmPidControlUpdate(DCM_Control* control)
 {
     control->count = xTaskGetTickCount();
+    DCPosControl* nidec_motor = (DCPosControl*)control->motor->priv;
 
-    control->curr_enc = StGetEncCount(control->enc);
+    control->curr_enc = control->enc->getTicks(control->enc);
     if (control->cmd)
     {
         switch (control->state)
@@ -67,7 +66,7 @@ bool DcmControlUpdate(DCM_Control* control)
                 control->target_count =
                     ((control->cmd_degrees / 360) *
                      ((control->cmd_degrees < 0) ? -1 : 1)) *
-                    (control->pusle_per_rev);
+                    (nidec_motor->pulses_per_rev);
 
                 control->state = RUNNING;
                 break;
@@ -83,14 +82,40 @@ bool DcmControlUpdate(DCM_Control* control)
                         delta =
                             (int16_t)(control->curr_enc - control->prev_enc);
                     control->delta_time = control->count - control->prev_count;
-                    control->velocity = (float)(delta / control->delta_time);
+                    control->velocity = (int16_t)(delta / control->delta_time);
                     control->diff += delta;
+
+                    // //pid
+                    control->velcoity_error =
+                        (int16_t)(control->target_velocity - control->velocity);
+
+                    control->integral_error +=
+                        (control->velcoity_error * control->delta_time);
+
+                    control->pid_signal +=
+                        (int16_t)(control->constant * control->velcoity_error) +
+                        (int16_t)(control->integral_constant *
+                                  control->integral_error);
+
+                    if (control->pid_signal > 100)
+                    {
+                        control->pid_signal =
+                            100;  //capping pwm freq to 100% duty cycle
+                    }
+                    if (control->pid_signal < 15)
+                    {
+                        control->pid_signal = 15;
+                    }
+
+                    control->motor->set_duty(control->motor,
+                                             control->pid_signal);
                 }
                 else
                 {
+                    //overflow handling
                     if (control->curr_enc <= control->prev_enc)
                     {
-                        //overflow handling
+
                         delta =
                             (int16_t)(control->curr_enc -
                                       control->prev_enc);  //  backward rotation
@@ -100,13 +125,35 @@ bool DcmControlUpdate(DCM_Control* control)
                     else
                         delta =
                             (int16_t)((control->curr_enc - control->prev_enc));
-
-                    if (delta > 0)
-                        delta *= 1;
                     control->delta_time = control->count - control->prev_count;
-                    control->velocity = delta / (control->delta_time / 1000);
-
+                    control->velocity = (int16_t)(delta / control->delta_time);
                     control->diff += delta;
+
+                    //pid
+                    control->velcoity_error =
+                        (int16_t)(control->target_velocity - control->velocity);
+
+                    control->integral_error +=
+                        (control->velcoity_error * control->delta_time);
+
+                    control->pid_signal +=
+                        (int16_t)(control->constant * control->velcoity_error) +
+                        (int16_t)(control->integral_constant *
+                                  control->integral_error);
+
+                    if (control->pid_signal > 100)
+                    {
+                        control->pid_signal =
+                            100;  //capping pwm freq to 100% duty cycle
+                    }
+
+                    if (control->pid_signal < 15)
+                    {
+                        control->pid_signal = 15;
+                    }
+
+                    control->motor->set_duty(control->motor,
+                                             control->pid_signal);
                 }
 
                 if (fabs(control->diff) < fabs(control->target_count))
@@ -123,7 +170,7 @@ bool DcmControlUpdate(DCM_Control* control)
             case DONE:
 
                 control->cmd = false;
-                DcmControlCommand(control, control->cmd, 0);
+                DcmPidControlCommand(control, control->cmd, 0);
                 break;
         }
 

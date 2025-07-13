@@ -9,8 +9,8 @@
 #include <stdint.h>
 #include "gpio.h"
 #include "main_loop.h"
+#include "nidec_dcm.h"
 #include "pwm.h"
-#include "st_dcm.h"
 #include "st_enc.h"
 
 typedef enum
@@ -40,17 +40,16 @@ struct DCM_Control
     volatile uint16_t curr_enc;
     uint16_t prev_enc;
     size_t target_count;
-    size_t pusle_per_rev;
     float velocity;
     volatile size_t count;
     size_t prev_count;
     size_t diff;
     int16_t delta_time;
     // int16_t delta;
-    size_t target_velocity;
+    int16_t target_velocity;
     int16_t velcoity_error;
     uint8_t constant;
-    uint16_t pid_signal;
+    int16_t pid_signal;
     uint8_t integral_constant;
     int16_t integral_error;
 
@@ -64,12 +63,10 @@ struct DCM_Control
  * 
  * @param control a pointer to the current DCM_Control instance
  * @param motor a pointer to the current DCMotor instance
- * @param pusles_per_rev an integer that holds a hardware specific value pusle per revolution
  * @param enc a pointer to the current QEnc instance
  * 
  */
-void DCM_Control_Init(DCM_Control* control, DCMotor* motor,
-                      size_t pulse_per_rev, QEnc* enc);
+void DCM_PID_Control_Init(DCM_Control* control, DCMotor* motor, QEnc* enc);
 
 /**
  * 
@@ -80,7 +77,7 @@ void DCM_Control_Init(DCM_Control* control, DCMotor* motor,
  * @param degrees desired amount of degrees to command motor to rotate
  *  
  * */
-void DcmControlCommand(DCM_Control* control, bool command, float degrees);
+void DcmPidControlCommand(DCM_Control* control, bool command, float degrees);
 
 /**
  * 
@@ -89,4 +86,4 @@ void DcmControlCommand(DCM_Control* control, bool command, float degrees);
  * 
  * @param control a pointer to the current DCM_Control instance
  */
-bool DcmControlUpdate(DCM_Control* control);
+bool DcmPidControlUpdate(DCM_Control* control);
