@@ -40,7 +40,7 @@ void DcmControlCommand(DCM_Control* control, bool command, float degrees)
 
     StDcmSetEnable(control->motor, command);
     control->motor->set_direction(control->motor, control->dir);
-    control->motor->set_duty(control->motor, 0);
+    StDcmSetDuty(control->motor, 95);  //inverted duty cycle
     if (command)
     {
         control->state = IDLE;
@@ -116,7 +116,7 @@ bool DcmControlUpdate(DCM_Control* control)
                 else
                 {
 
-                    control->motor->set_duty(control->motor, 0);
+                    StDcmSetDuty(control->motor, 0);
                     control->state = DONE;
                     break;
                 }

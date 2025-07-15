@@ -80,9 +80,9 @@ bool BSP_Init(QEnc* enc, Gpio* channel_a, Gpio* channel_b, DCMotor* motor,
     StGpioInit(channel_b, &channel_b_param);
     StGpioConfig(channel_b);
 
-    StPwmInit(pwm, &st_pwm, TIM2_BASE, 84000000);
+    StPwmInit(pwm, &st_pwm, TIM2_BASE, 80000000);
 
-    StPwmSetFreq(pwm, 25);
+    StPwmSetFreq(pwm, 15000);
 
     StDcmInit(motor, &st_motor, brake, direction, pwm);
     DCM_Control_Init(control, motor, 400, enc);

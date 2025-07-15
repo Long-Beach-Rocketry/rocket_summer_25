@@ -52,5 +52,5 @@ bool StDcmSetDir(DCMotor* motor, bool direction)
 void StDcmSetDuty(DCMotor* motor, float duty)
 {
     DCPosControl* dev = (DCPosControl*)motor->priv;
-    dev->pwm->setDuty(dev->pwm, duty);
+    dev->pwm->setDuty(dev->pwm, (100 - duty));  //inverted duty cycle
 }
