@@ -2,7 +2,7 @@ from PyQt6.QtWidgets import * #* imports all the modules from PyQt6.QtWidgets
 from PyQt6.QtGui import * 
 from PyQt6.QtCore import *
 from PyQt6.QtSerialPort import *
-import sys
+import time
 
 #class to protodisplay - one parameter(list)
 application = QApplication([]) #creating the application to run the window
@@ -35,6 +35,9 @@ class Window(QMainWindow): #creating window for the Qtable to display (inheritan
         self.telemetry.setColumnCount(1)
         self.telemetry.setRowCount(len(insert))
         self.telemetry.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers) #making telemetry noneditable
+        running = ["0"]
+        run = QTableWidgetItem(running[0])
+        self.telemetry.setItem(0, 0, run)
 #creating tabs 
         self.tab = QTabWidget(self) #creating tabs to switch between
         self.tab.resize(800,800)
@@ -63,11 +66,23 @@ class Window(QMainWindow): #creating window for the Qtable to display (inheritan
         self.button.clicked.connect(self.buttoned) #if the button is clicked, refer to buttoned()
 #if button is clicked
     def buttoned(self):
+        #start = time.time()
+        running = ["0", "1"] #to display running if 0, once done, displays 1 -- for telemetry
+        run = QTableWidgetItem(running[0])
+        time.sleep(3)
+        self.telemetry.setItem(0, 0, run)
         for i in range(len(insert)): #iterating through all the rows
             itm = QTableWidgetItem(new_list[i]) #creating a new item with each text of the previous table 
             oldItem = QTableWidgetItem(new_list[i]) #creating another new item with each text of previous table to update old table
             self.new.setItem(i, 0, itm) #setting the new text to it's corresponding location
             self.columns.setItem(i, 0, oldItem) #setting the new text to the corresponding location of the old one
+        run = QTableWidgetItem(running[1])
+        self.telemetry.setItem(0, 0, run)
+        '''end = time.time()
+        elapsed = end-start
+        elap = [elapsed]
+        elapse = QTableWidgetItem(elapsed[0])
+        self.telemetry.setItem(1, 0, elapse)'''
         print(new_list)
 class Protodisplay: #creating a class called protodisplay   
     def __init__(self, newlist): #initializing variables (list)
