@@ -1,0 +1,18 @@
+#pragma once
+
+#include "ds_servo.h"
+#include "freertos_timer.h"
+#include "prealloc.h"
+#include "st_gpio.h"
+#include "st_gpio_fctry.h"
+#include "st_i2c_fctry.h"
+#include "st_pwm.h"
+#include "st_usart.h"
+#include "st_usart_fctry.h"
+#include "stm32l476xx.h"
+#include "stm32l4xx_hal.h"
+#include "usart_cli.h"
+
+#define DRIVER_MEM_SIZE 0x256
+
+bool BSP_Init(SERVOMotor* servo, Pwm* pwm, Gpio* gpio_pwm, size_t freq);

@@ -33,17 +33,17 @@ void DCM_PID_Control_Init(DCM_Control* control, DCMotor* motor, QEnc* enc)
 
 void DcmPidControlCommand(DCM_Control* control, bool command, float degrees)
 {
-    control->cmd = command;
-    control->cmd_degrees = degrees;
-
-    control->motor->set_en(control->motor, command);
-    control->motor->set_direction(control->motor, control->dir);
-    control->motor->set_duty(control->motor, 35);  //inverted duty cycle
-    if (command)
+    if (!control->cmd && command)
     {
-        control->state = IDLE;
+        control->cmd = command;
+        control->cmd_degrees = degrees;
+
+        control->motor->set_en(control->motor, command);
+        control->motor->set_direction(control->motor, control->dir);
+        control->motor->set_duty(control->motor, 50);  //inverted duty cycle
     }
-    else
+
+    if (!command)
     {
         control->curr_enc = 0;
         control->diff = 0;

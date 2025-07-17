@@ -6,7 +6,7 @@ add_library(motors STATIC
     encoder/fake_enc.c
     # motor_control/fake_dcm_control.c
     DC/nidec_dcm.c
-    encoder/st_enc.c
+    SERVO/ds_servo.c
 )
 
 
@@ -16,6 +16,7 @@ target_include_directories(motors PUBLIC
     DC
     # motor_control
     driver
+    SERVO
 )
 
 
