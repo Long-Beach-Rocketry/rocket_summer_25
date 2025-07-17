@@ -1,122 +1,174 @@
 {
-    "version": "0.2.0",
-    "projectName": "proj2",
-    "configurations": [
-        {
-            "cwd": "${workspaceFolder}",
-            "executable": "${workspaceRoot}/build/stm32f746/app/cli_app/cli_app",
-            "name": "DEBUG CLI F7",
-            "request": "launch",
-            "type": "cortex-debug",
-            "servertype": "openocd",
-            "device": "STM32F746",
-            "svdFile": "${workspaceRoot}/mcu_support/stm32/f7xx/f746/STM32F746.svd",
-            "searchDir": [
-                "${workspaceRoot}/mcu_support/stm32"
-            ],
-            "runToMain": true,
-            "configFiles": [
-                "${workspaceRoot}/mcu_support/stm32/stlink-dap.cfg",
-                "${workspaceRoot}/mcu_support/stm32/f7xx/stm32f7x.cfg"
-            ],
-            "debuggerArgs": [
-                "-d",
-                "${workspaceRoot}",
-            ],
-            "preRestartCommands": [
-                "add-symbol-file /build/stm32f746/app/cli_app/cli_app",
-                "load",
-                "enable breakpoint",
-                "monitor reset"
-            ],
-            "showDevDebugOutput": true,
-        },
-        {
-            "cwd": "${workspaceFolder}",
-            "executable": "${workspaceRoot}/build/stm32l476/app/cli_app/cli_app",
-            "name": "DEBUG CLI L4",
-            "request": "launch",
-            "type": "cortex-debug",
-            "servertype": "openocd",
-            "device": "STM32L4",
-            "svdFile": "${workspaceRoot}/mcu_support/l4xx/STM32L4x2.svd",
-            "searchDir": [
-                "${workspaceRoot}/mcu_support/stm32"
-            ],
-            "runToMain": true,
-            "configFiles": [
-                "${workspaceRoot}/mcu_support/stm32/stlink-dap.cfg",
-                "${workspaceRoot}/mcu_support/stm32/l4xx/stm32l4x.cfg"
-            ],
-            "debuggerArgs": [
-                "-d",
-                "${workspaceRoot}",
-            ],
-            "preRestartCommands": [
-                "add-symbol-file build/stm32l476/app/cli_app/cli_app",
-                "load",
-                "enable breakpoint",
-                "monitor reset"
-            ],
-            "showDevDebugOutput": true,
-        },
-        {
-            "cwd": "${workspaceFolder}",
-            "executable": "${workspaceRoot}/build/stm32f401/app/gpio_test/gpio_test",
-            "name": "DEBUG CLI F4",
-            "request": "launch",
-            "type": "cortex-debug",
-            "servertype": "openocd",
-            "device": "STM32F401",
-            // "svdFile": "${workspaceRoot}/mcu_support/l4xx/STM32L4x2.svd",
-            "searchDir": [
-                "${workspaceRoot}/mcu_support/stm32"
-            ],
-            "runToMain": true,
-            "configFiles": [
-                "${workspaceRoot}/mcu_support/stm32/stlink-dap.cfg",
-                "${workspaceRoot}/mcu_support/stm32/f4xx/stm32f4x.cfg"
-            ],
-            "debuggerArgs": [
-                "-d",
-                "${workspaceRoot}",
-            ],
-            "preRestartCommands": [
-                "add-symbol-file build/stm32f401/app/gpio_test/gpio_test",
-                "load",
-                "enable breakpoint",
-                "monitor reset"
-            ],
-            "showDevDebugOutput": true,
-        },
-        {
-            "cwd": "${workspaceFolder}",
-            "executable": "${workspaceRoot}/build/stm32h503/app/subscale/subscale",
-            "name": "DEBUG CLI H5",
-            "request": "launch",
-            "type": "cortex-debug",
-            "servertype": "openocd",
-            "device": "STM32H5",
-            // "svdFile": "${workspaceRoot}/mcu_support/h5xx/h563/STM32H563.svd",
-            "searchDir": [
-                "${workspaceRoot}/mcu_support/stm32"
-            ],
-            "runToMain": true,
-            "configFiles": [
-                "${workspaceRoot}/mcu_support/stm32/stlink-dap.cfg",
-                "${workspaceRoot}/mcu_support/stm32/h5xx/stm32h5x.cfg"
-            ],
-            "debuggerArgs": [
-                "-d",
-                "${workspaceRoot}",
-            ],
-            "preRestartCommands": [
-                "add-symbol-file build/stm32h503/app/subscale/subscale",
-                "load",
-                "enable breakpoint",
-                "monitor reset"
-            ],
-            "showDevDebugOutput": true,
-        },
-    ]
+  "version": "0.2.0",
+  "projectName": "proj2",
+  "configurations": [
+    {
+      "cwd": "${workspaceFolder}",
+      "executable": "${workspaceRoot}/build/stm32f746/app/cli_app/cli_app",
+      "name": "DEBUG CLI F7",
+      "request": "launch",
+      "type": "cortex-debug",
+      "servertype": "openocd",
+      "device": "STM32F746",
+      "svdFile": "${workspaceRoot}/mcu_support/stm32/f7xx/f746/STM32F746.svd",
+      "searchDir": ["${workspaceRoot}/mcu_support/stm32"],
+      "runToMain": true,
+      "configFiles": [
+        "${workspaceRoot}/mcu_support/stm32/stlink-dap.cfg",
+        "${workspaceRoot}/mcu_support/stm32/f7xx/stm32f7x.cfg"
+      ],
+      "debuggerArgs": ["-d", "${workspaceRoot}"],
+      "preRestartCommands": [
+        "add-symbol-file /build/stm32f746/app/cli_app/cli_app",
+        "load",
+        "enable breakpoint",
+        "monitor reset"
+      ],
+      "showDevDebugOutput": true
+    },
+    {
+      "cwd": "${workspaceFolder}",
+      "executable": "${workspaceRoot}/build/stm32l476/app/cli_app/cli_app",
+      "name": "DEBUG CLI L4",
+      "request": "launch",
+      "type": "cortex-debug",
+      "servertype": "openocd",
+      "device": "STM32L476",
+      "svdFile": "${workspaceRoot}/mcu_support/l4xx/STM32L4x2.svd",
+      "searchDir": ["${workspaceRoot}/mcu_support/stm32"],
+      "runToMain": true,
+      "configFiles": [
+        "${workspaceRoot}/mcu_support/stm32/stlink-dap.cfg",
+        "${workspaceRoot}/mcu_support/stm32/l4xx/stm32l4x.cfg"
+      ],
+      "debuggerArgs": ["-d", "${workspaceRoot}"],
+      "preRestartCommands": [
+        "add-symbol-file build/stm32l476/app/cli_app/cli_app",
+        "load",
+        "enable breakpoint",
+        "monitor reset"
+      ],
+      "showDevDebugOutput": true
+    },
+    {
+      "cwd": "${workspaceFolder}",
+      "executable": "${workspaceRoot}/build/stm32f401/app/gpio_test/gpio_test",
+      "name": "DEBUG CLI F4",
+      "request": "launch",
+      "type": "cortex-debug",
+      "servertype": "openocd",
+      "device": "STM32F401",
+      // "svdFile": "${workspaceRoot}/mcu_support/l4xx/STM32L4x2.svd",
+      "searchDir": ["${workspaceRoot}/mcu_support/stm32"],
+      "runToMain": true,
+      "configFiles": [
+        "${workspaceRoot}/mcu_support/stm32/stlink-dap.cfg",
+        "${workspaceRoot}/mcu_support/stm32/f4xx/stm32f4x.cfg"
+      ],
+      "debuggerArgs": ["-d", "${workspaceRoot}"],
+      "preRestartCommands": [
+        "add-symbol-file build/stm32f401/app/gpio_test/gpio_test",
+        "load",
+        "enable breakpoint",
+        "monitor reset"
+      ],
+      "showDevDebugOutput": true
+    },
+    {
+      "cwd": "${workspaceFolder}",
+      "executable": "${workspaceRoot}/build/stm32h503/app/subscale/subscale",
+      "name": "DEBUG CLI H503",
+      "request": "launch",
+      "type": "cortex-debug",
+      "servertype": "openocd",
+      "device": "STM32H503",
+      // "svdFile": "${workspaceRoot}/mcu_support/h5xx/h563/STM32H563.svd",
+      "searchDir": ["${workspaceRoot}/mcu_support/stm32"],
+      "runToMain": true,
+      "configFiles": [
+        "${workspaceRoot}/mcu_support/stm32/stlink-dap.cfg",
+        "${workspaceRoot}/mcu_support/stm32/h5xx/stm32h5x.cfg"
+      ],
+      "debuggerArgs": ["-d", "${workspaceRoot}"],
+      "preRestartCommands": [
+        "add-symbol-file build/stm32h503/app/subscale/subscale",
+        "load",
+        "enable breakpoint",
+        "monitor reset"
+      ],
+      "showDevDebugOutput": true
+    },
+    {
+      "cwd": "${workspaceFolder}",
+      "executable": "${workspaceRoot}/build/stm32l476/app/pwm_app/pwm_app",
+      "name": "DEBUG PWM L4",
+      "request": "launch",
+      "type": "cortex-debug",
+      "servertype": "openocd",
+      "device": "STM32L476",
+      "svdFile": "${workspaceRoot}/mcu_support/l4xx/STM32L4x2.svd",
+      "searchDir": ["${workspaceRoot}/mcu_support/stm32"],
+      "runToMain": true,
+      "configFiles": [
+        "${workspaceRoot}/mcu_support/stm32/stlink-dap.cfg",
+        "${workspaceRoot}/mcu_support/stm32/l4xx/stm32l4x.cfg"
+      ],
+      "debuggerArgs": ["-d", "${workspaceRoot}"],
+      "preRestartCommands": [
+        "add-symbol-file build/stm32l476/app/pwm_app/pwm_app",
+        "load",
+        "enable breakpoint",
+        "monitor reset"
+      ],
+      "showDevDebugOutput": true
+    },
+    {
+      "cwd": "${workspaceFolder}",
+      "executable": "${workspaceRoot}/build/stm32l476/app/dcm_app/dcm_app",
+      "name": "DEBUG DCM L4",
+      "request": "launch",
+      "type": "cortex-debug",
+      "servertype": "openocd",
+      "device": "STM32L476",
+      "svdFile": "${workspaceRoot}/mcu_support/l4xx/STM32L4x2.svd",
+      "searchDir": ["${workspaceRoot}/mcu_support/stm32"],
+      "runToMain": true,
+      "configFiles": [
+        "${workspaceRoot}/mcu_support/stm32/stlink-dap.cfg",
+        "${workspaceRoot}/mcu_support/stm32/l4xx/stm32l4x.cfg"
+      ],
+      "debuggerArgs": ["-d", "${workspaceRoot}"],
+      "preRestartCommands": [
+        "add-symbol-file build/stm32l476/app/dcm_app/dcm_app",
+        "load",
+        "enable breakpoint",
+        "monitor reset"
+      ],
+      "showDevDebugOutput": true
+    },
+    {
+      "cwd": "${workspaceFolder}",
+      "executable": "${workspaceRoot}/build/stm32l476/app/servo_app/servo_app",
+      "name": "DEBUG SERVO L4",
+      "request": "launch",
+      "type": "cortex-debug",
+      "servertype": "openocd",
+      "device": "STM32L476",
+      "svdFile": "${workspaceRoot}/mcu_support/l4xx/STM32L4x2.svd",
+      "searchDir": ["${workspaceRoot}/mcu_support/stm32"],
+      "runToMain": true,
+      "configFiles": [
+        "${workspaceRoot}/mcu_support/stm32/stlink-dap.cfg",
+        "${workspaceRoot}/mcu_support/stm32/l4xx/stm32l4x.cfg"
+      ],
+      "debuggerArgs": ["-d", "${workspaceRoot}"],
+      "preRestartCommands": [
+        "add-symbol-file build/stm32l476/app/servo_app/servo_app",
+        "load",
+        "enable breakpoint",
+        "monitor reset"
+      ],
+      "showDevDebugOutput": true
+    }
+  ]
 }
