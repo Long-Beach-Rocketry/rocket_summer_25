@@ -107,6 +107,7 @@ TEST_F(ReadCharTests, idle_to_success_then_flush)
  */
 TEST_F(ReadCharTests, idle_wrong_checksum)
 {
+    //21-46-02-50-66-20 (the data bellow in HEX)
     const char data[] = {'!', ADDRESS, 2, 'P', 'f', 32};
     lbr_net_node_init(&bus, ADDRESS);
     for (int i = 0; i < sizeof(data); i++)

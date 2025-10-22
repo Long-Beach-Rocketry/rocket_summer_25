@@ -1,4 +1,8 @@
-
+/**
+ * @file main.c
+ * @brief This file tests the uart_lbr_net without protobuffers
+ * @author TJ Malaska
+ */
 #include "FreeRTOS.h"
 
 #include "main_loop.h"
@@ -12,6 +16,8 @@ Usart usart;
 uint8_t data = 1;
 size_t data_size = sizeof(data_size);
 network_if interface;
+// test with     //21-42-02-50-66-1B (the data bellow in HEX)
+//				21420250661b
 
 static void loop_func(void)
 {

@@ -1,3 +1,8 @@
+/**
+ * @file network_interface.h
+ * @brief interface to use lbr_net across differnt platforms
+ * @author TJ Malaska
+ */
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>

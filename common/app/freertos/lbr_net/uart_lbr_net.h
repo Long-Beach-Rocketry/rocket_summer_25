@@ -1,3 +1,9 @@
+/**
+ * @file uart_lbr_net.h
+ * @brief lbr_net interface implementation for usart using protobuffers
+ * @author TJ Malaska
+ */
+
 /*
 notes from nick
 the interupt will pass a complete message in and notify that previously blocked state updater should be ready
@@ -8,7 +14,7 @@ The main loop should just call funcitons based off of the strcut of states
 #include "lbr_net.h"
 #include "network_interface.h"
 
-#include <pb_decode.h>
+#include <pb_decode.h>  //idk if i should be usiung this i think i should be using the pb_cmd.h or if i should be using protobuffers at all lbr net has nothing to do with protobuffers
 #include <pb_encode.h>
 
 #include "FreeRTOS.h"
