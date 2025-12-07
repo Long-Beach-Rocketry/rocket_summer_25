@@ -1,6 +1,6 @@
 
-#include "subscale_app.h"
-
+#include "subscale_app_rayne.h"
+//needs to be moved and its own
 static Cli cli;
 
 static W25q flash;
@@ -18,25 +18,36 @@ static NavDataLogBuilder nav_builder;
 static NavData nav;
 static NavSuiteV1 nav_suite;
 
-static Gpio* led;
+static Gpio* red_led;
+static Gpio* green_led;
+static Gpio* blue_led;
 
 static void loop_func(void)
 {
-    nav.update(&nav);
+    if (logger.enabled)
+    {
+        nav.update(&nav);
+        red_led->toggle(red_led);
+    }
     nav.tick = xTaskGetTickCount();
     logger_update(&logger);
-    led->toggle(led);
 }
 
 static void init(void)
 {
-    //lmao
+    vTaskDelay(10);
+    Bno055_Set_Mode(&bno, BNO055_IMU_MODE);
+    Bmp390_Config(&bmp);
+    blue_led->set(blue_led, 1);  //turn off both leds
+    green_led->set(green_led, 1);
 }
 
-void SubscaleAppCreate(Usart* usart, Spi* spi, I2c* i2c, Gpio* led_gpio,
-                       ResetFunc reset)
+void SubscaleAppCreateRayne(Usart* usart, Spi* spi, I2c* i2c, Gpio* red_gpio,
+                            Gpio* green_gpio, Gpio* blue_gpio, ResetFunc reset)
 {
-    led = led_gpio;
+    red_led = red_gpio;
+    green_led = green_gpio;
+    blue_led = blue_gpio;
     Command commands[4] = {{"Blink", blink, "Blinks LED."},
                            {"Imu", read_bno055, "Reads IMU accel/gyro."},
                            {"Baro", read_bmp390, "Reads Barometer Pressure."},
@@ -45,10 +56,9 @@ void SubscaleAppCreate(Usart* usart, Spi* spi, I2c* i2c, Gpio* led_gpio,
 
     W25qInit(&flash, spi, 0xFFFFFF);
     Bno055_Init(&bno, i2c, BNO055_DEV_ADDR_GND);
-    Bno055_Set_Mode(&bno, BNO055_IMU_MODE);
-    Bmp390_Init(&bmp, i2c, BMP390_DEV_ADDR_PWR);
-    Bmp390_Config(&bmp);
-    Bno055_Set_Mode(&bno, BNO055_IMU_MODE);
+    Bmp390_Init(&bmp, i2c, BMP390_DEV_ADDR_GND);
+
+    // Bno055_Set_Mode(&bno, BNO055_IMU_MODE);  //why is this here twice
 
     W25qLoggerInit(&sub, &flash_log, &flash, flash.mem_size / flash.page_size);
     BulkLoggerInit(&bulk_sub, &bulk_priv, &sub, 4, '|', data,
@@ -59,7 +69,7 @@ void SubscaleAppCreate(Usart* usart, Spi* spi, I2c* i2c, Gpio* led_gpio,
 
     cmd_logger_init(&cli, &logger);
 
-    init_blink(cli.comm, led_gpio);
+    init_blink(cli.comm, red_gpio);
     init_read_bno055(cli.comm, &bno);
     init_read_bmp390(cli.comm, &bmp);
     init_read_w25q_id(cli.comm, spi);

@@ -1,4 +1,4 @@
-set(EXECUTABLE subscale)
+set(EXECUTABLE flight_computer_subscale)
 set(LDF ${CMAKE_CURRENT_BINARY_DIR}/${EXECUTABLE}.ld)
 
 set(PREPROCESS_DEFS
@@ -6,10 +6,9 @@ set(PREPROCESS_DEFS
     -DDEF_FLASH_SIZE=1024K
 )
 
-add_subdirectory_for(STM32F746 BSP_F746)
-add_subdirectory_for(STM32H503 BSP_H503)
+add_subdirectory_for(STM32L476 BSP_L476)
 
-if (TARGET subscale_bsp)
+if (TARGET flight_computer_subscale_bsp)
     add_executable_for(${TARGET_DEVICE} ${EXECUTABLE} ${LDF}
         main.c
         freertos.c
@@ -18,10 +17,9 @@ if (TARGET subscale_bsp)
     )
 
     target_link_libraries_for(${TARGET_DEVICE} ${EXECUTABLE} PRIVATE
-        subscale_bsp
+        flight_computer_subscale_bsp
     )
 
     target_preprocess_for(${TARGET_DEVICE} ${EXECUTABLE} ${LINKER_SCRIPT} ${LDF} ${PREPROCESS_DEFS})
-    
 
 endif()

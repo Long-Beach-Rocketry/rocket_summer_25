@@ -22,8 +22,10 @@ function(add_executable_for DEVICE EXECUTABLE LINKER_SCRIPT)
                 POST_BUILD
                 COMMAND ${TOOLCHAIN_PREFIX}objcopy -O ihex ${EXECUTABLE} ${EXECUTABLE}.hex
                 COMMAND ${TOOLCHAIN_PREFIX}objcopy -O binary ${EXECUTABLE} ${EXECUTABLE}.bin
-                COMMAND ${TOOLCHAIN_PREFIX}objcopy -O srec ${EXECUTABLE} ${EXECUTABLE}.elf
-                COMMAND ${TOOLCHAIN_PREFIX}size --format=berkeley ${EXECUTABLE}.elf
+                #COMMAND ${TOOLCHAIN_PREFIX}objcopy -O srec ${EXECUTABLE} ${EXECUTABLE}.elf     changed 6/7 TJ
+                #COMMAND ${TOOLCHAIN_PREFIX}size --format=berkeley ${EXECUTABLE}.elf
+                COMMAND ${TOOLCHAIN_PREFIX}objcopy -O srec ${EXECUTABLE} ${EXECUTABLE}.srec
+                COMMAND ${TOOLCHAIN_PREFIX}size --format=berkeley ${EXECUTABLE}
             )
         endif()
     endif()
