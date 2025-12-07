@@ -1,4 +1,5 @@
 add_subdirectory(cli_app)
+add_subdirectory(flight_computer_subscale)
 add_subdirectory(logging)
 add_subdirectory(pwm_app)
 add_subdirectory(serial_term)

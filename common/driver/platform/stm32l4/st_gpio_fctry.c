@@ -1,4 +1,3 @@
-
 #include "st_gpio_fctry.h"
 
 bool GiveStGpio(Gpio* gpio, Mem* mem, StGpioParams params)

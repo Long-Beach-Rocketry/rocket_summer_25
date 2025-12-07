@@ -9,7 +9,9 @@ void NavSuiteV1Init(NavData* data, NavSuiteV1* bosch, Bmp390* baro, Bno055* imu)
 
     data->update = NavSuiteV1Update;
 }
-
+/**
+ * Updates navdata 
+ */
 bool NavSuiteV1Update(NavData* data)
 {
     NavSuiteV1* nav = (NavSuiteV1*)data->priv;

@@ -1,3 +1,7 @@
+/**
+ * STM32L4 SPI Driver
+ */
+
 #pragma once
 
 #include "stm32l4xx.h"
@@ -9,9 +13,6 @@
 typedef struct
 {
     SPI_TypeDef* instance;
-    Gpio mosi;
-    Gpio miso;
-    Gpio scl;
     Timeout* timer;
 } StPrivSpi;
 
