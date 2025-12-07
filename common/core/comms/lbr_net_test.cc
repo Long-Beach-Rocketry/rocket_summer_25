@@ -5,8 +5,13 @@
 #include <cstdio>
 extern "C"
 {
+#include <pb_decode.h>
+#include <pb_encode.h>
 #include <string.h>
+#include "cmd_message.h"
+#include "example.pb.h"
 #include "lbr_net.h"
+#include "pb_cmd.h"
 }
 
 #define ADDRESS 70
@@ -36,7 +41,7 @@ public:
  */
 TEST_F(FormatTests, pack_test)
 {
-    const uint8_t data[10] = "f";
+    uint8_t data[10] = "f";
     const uint8_t expected_checksum =
         (START_TRANSMISSION + ADDRESS + 1 + 'f') % 256;
     const uint8_t expected_buf[] = {START_TRANSMISSION, ADDRESS, 1, 'f',
@@ -48,23 +53,17 @@ TEST_F(FormatTests, pack_test)
 }
 
 /**
- * @brief Test to make sure NACK changes state to ERROR.
+ * @brief Test to see if we read data size if the address is correct.
  */
-TEST_F(ReadCharTests, idle_to_error_test)
+TEST_F(ReadCharTests, idle_to_right_address_test)
 {
+    const uint8_t data[] = {START_TRANSMISSION, ADDRESS}; /*right address*/
     lbr_net_node_init(&bus, ADDRESS);
-    bus.read_byte(&bus, NACK);
-    EXPECT_EQ(bus.state, ERROR);
-}
-
-/**
- * @brief Test to make sure ACK changes state to ACK.
- */
-TEST_F(ReadCharTests, idle_to_ack_test)
-{
-    lbr_net_node_init(&bus, ADDRESS);
-    bus.read_byte(&bus, ACK);
-    EXPECT_EQ(bus.state, ACKNOWLEDGED);
+    EXPECT_EQ(bus.state, IDLE);
+    bus.read_byte(&bus, data[0]);
+    EXPECT_EQ(bus.state, READ_ADDRESS);
+    bus.read_byte(&bus, data[1]);
+    EXPECT_EQ(bus.state, READ_LEN);
 }
 
 /**
@@ -72,9 +71,9 @@ TEST_F(ReadCharTests, idle_to_ack_test)
  */
 TEST_F(ReadCharTests, idle_to_wrong_address_test)
 {
-
     const uint8_t data[] = {START_TRANSMISSION, ADDRESS + 1}; /*wrong address*/
     lbr_net_node_init(&bus, ADDRESS);
+    EXPECT_EQ(bus.state, IDLE);
     bus.read_byte(&bus, data[0]);
     EXPECT_EQ(bus.state, READ_ADDRESS);
     bus.read_byte(&bus, data[1]);
@@ -86,7 +85,7 @@ TEST_F(ReadCharTests, idle_to_wrong_address_test)
  */
 TEST_F(ReadCharTests, idle_to_success_then_flush)
 {
-    uint8_t sum = ('!' + ADDRESS + 2 + 'P' + 'f') % 256;
+    uint8_t sum = (START_TRANSMISSION + ADDRESS + 2 + 'P' + 'f') % 256;
     const uint8_t data[] = {'!', ADDRESS, 2, 'P', 'f', sum};
     const uint8_t msg[] = {'P', 'f'};
     lbr_net_node_init(&bus, ADDRESS);
@@ -104,17 +103,18 @@ TEST_F(ReadCharTests, idle_to_success_then_flush)
 }
 
 /**
- * @brief Test that a wrong checksum will result in an error.
+ * @brief Test that a wrong checksum will result in going back to IDLE.
  */
 TEST_F(ReadCharTests, idle_wrong_checksum)
 {
+    //21-46-02-50-66-20 (the data bellow in HEX)
     const char data[] = {'!', ADDRESS, 2, 'P', 'f', 32};
     lbr_net_node_init(&bus, ADDRESS);
     for (int i = 0; i < sizeof(data); i++)
     {
         bus.read_byte(&bus, data[i]);
     }
-    EXPECT_EQ(bus.state, ERROR);
+    EXPECT_EQ(bus.state, IDLE);
 }
 
 /**
@@ -122,7 +122,7 @@ TEST_F(ReadCharTests, idle_wrong_checksum)
  */
 TEST_F(FormatTests, encode_decode_test)
 {
-    const uint8_t data[5] = {'c', 'a', 'f', 'e', 's'};
+    uint8_t data[5] = {'c', 'a', 'f', 'e', 's'};
     const uint8_t expected_checksum =
         (START_TRANSMISSION + ADDRESS + 5 + 'c' + 'a' + 'f' + 'e' + 's') % 256;
     const uint8_t expected_buf[] = {

@@ -51,6 +51,9 @@ public:
     }
 };
 
+//added to fix linker error on mac circle back on this
+constexpr size_t RetryTimerTest ::RETRY_COUNT;
+
 TEST_F(RetryTimerTest, InitTest)
 {
     retry_timer_init(&timer, &rd, RETRY_COUNT);

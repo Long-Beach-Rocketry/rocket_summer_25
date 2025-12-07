@@ -13,5 +13,20 @@ endif()
 if ("${TARGET_DEVICE}" MATCHES "NATIVE")
     # For Windows: Prevent overriding the parent project's compiler/linker settings
     set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+
+    # C++ standard
+    set(CMAKE_CXX_STANDARD 20)
+    set(CMAKE_CXX_STANDARD_REQUIRED ON)
+    set(CMAKE_CXX_EXTENSIONS OFF)
+
+    # C standard
+    set(CMAKE_C_STANDARD 23)  # or 17, 11, etc.
+    set(CMAKE_C_STANDARD_REQUIRED ON)
+    set(CMAKE_C_EXTENSIONS OFF)
+
     add_subdirectory(googletest)
 endif()
+
+#probably should be changed later but just trying to make it work
+add_subdirectory(nanopb)
+

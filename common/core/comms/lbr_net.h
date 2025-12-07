@@ -3,7 +3,7 @@
  * This software is a generic bus designed to serialize data over UART for board to board communication.
  * Allows for one byte addressing and checksum error checking.
  * Format for the packets one byte each:
- *      acknowledge, address, datalength, data(as long as the package size), checksum   
+ *      start transmission, address, datalength, data(as long as the package size), checksum   
  * Author: TJ Malaska
  */
 #pragma once
@@ -12,7 +12,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#define MAX_RECEIVE_BUF_SIZE 255U
+#define MAX_RECEIVE_BUF_SIZE 1028U
 #define CHECKSUM_SIZE 1
 #define CHECKSUM_BITS 256
 #define START_BYTE_SIZE 1
@@ -26,8 +26,6 @@
 typedef enum
 {
     IDLE,
-    ERROR,
-    ACKNOWLEDGED,
     READ_ADDRESS,
     READ_LEN,
     READ_DATA,
@@ -41,8 +39,8 @@ Control flags for protocol.
 typedef enum
 {
     START_TRANSMISSION = '!',
-    ACK = '+',
-    NACK = '-'
+    //ACK = '+',
+    //NACK = '-'
 } ControlFlags;
 
 /**
@@ -63,14 +61,14 @@ struct Bus
     uint8_t address;
     char receive_buffer[MAX_RECEIVE_BUF_SIZE];
     bool (*pack)(Bus* self, uint8_t* buffer, uint16_t buffer_size,
-                 uint8_t target, const uint8_t* data, uint8_t data_size);
+                 uint8_t target, uint8_t* data, uint8_t data_size);
     void (*read_byte)(Bus* self, uint8_t data);
     uint8_t (*get_package_size)(Bus* self);
     void (*flush_data)(Bus* self, uint8_t* buffer);
 };
 
 /**
- * @brief Converts data into a formatted message and clears/writes to a buffer.
+ * @brief Converts data into a formatted message and clears/writes to a buffer. (change order and name buffers to input output)
  * 
  * @param self A pointer the current sending bus struct.
  * @param buffer A pointer a buffer that we will store the output in.
@@ -81,7 +79,7 @@ struct Bus
  * @return True if success and false if the data is longer then the buffer size.
  */
 bool pack(Bus* self, uint8_t* buffer, uint16_t buffer_size, uint8_t target,
-          const uint8_t* data, uint8_t data_size);
+          uint8_t* data, uint8_t data_size);
 
 /**
  * @brief Reads a byte stores in receive buffer and updates the bus state.

@@ -34,7 +34,9 @@ void StUsartConfig(Usart* usart, uint32_t system_core_clk, uint32_t baudrate)
     uint16_t uartdiv = system_core_clk / baudrate;
     dev->instance->BRR = (((uartdiv / 16) << USART_BRR_DIV_MANTISSA_Pos) |
                           ((uartdiv % 16) << USART_BRR_DIV_FRACTION_Pos));
-    dev->instance->CR1 |= USART_CR1_UE | USART_CR1_RE | USART_CR1_TE;
+    dev->instance
+
+        ->CR1 |= USART_CR1_UE | USART_CR1_RE | USART_CR1_TE;
     dev->instance->CR1 |= USART_CR1_RXNEIE;
 }
 

@@ -37,6 +37,19 @@ jobs:
         with:
           cmake-version: "3.27"
 
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install compatible Python dependencies for Nanopb
+        run: |
+          pip install protobuf==3.20.* grpcio-tools
+      - name: Install Protobuf compiler and C++ library
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y protobuf-compiler libprotobuf-dev
+
       - name: Pull git submodules
         run: |
           git submodule update --init --recursive
@@ -94,6 +107,19 @@ jobs:
         uses: lukka/get-cmake@latest
         with:
           cmake-version: "3.27"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install compatible Python dependencies for Nanopb
+        run: |
+          pip install protobuf==3.20.* grpcio-tools
+      - name: Install Protobuf compiler and C++ library
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y protobuf-compiler libprotobuf-dev
 
       - name: Pull git submodules
         run: |

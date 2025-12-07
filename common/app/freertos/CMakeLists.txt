@@ -6,6 +6,7 @@ add_library(freertos_app STATIC
 
 target_include_directories(freertos_app PUBLIC
     cli
+    lbr_net
     mission
     timeout
 )

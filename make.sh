@@ -52,4 +52,6 @@ cmake --preset=$TARGET -DTARGET_APP=$APP -DCMAKE_BUILD_TYPE=$MODE
 pushd build/$TARGET
 cmake --build .
 popd
+rm compile_commands*
 ln -sf build/$TARGET/compile_commands.json compile_commands.json
+

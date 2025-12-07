@@ -1,0 +1,11 @@
+pandas
+protobuf==3.20
+plotly_express
+pyserial
+grpcio
+grpcio-tools
+#notes
+#why are we usiong protobuf 3.20 again
+#grpcio-tools 1.73.0 requires protobuf 7 or 6.30 right now 3.6.31 builds need to test still
+#solution possibly use a old version of grpcio-tools for protobuf
+#We are also installing protobuf 3.20 in the yml file for the CI im need to do some testing
